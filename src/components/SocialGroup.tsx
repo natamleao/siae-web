@@ -5,14 +5,16 @@ import SocialLink from "./socialLink";
 
 interface SocialGroupProps {
     title: string;
+    instagramName: string;
+    emailAddress: string;
 }
 
-export default function SocialGroup({ title }: SocialGroupProps) {
+export default function SocialGroup({ title,emailAddress, instagramName }: SocialGroupProps) {
     return (
         <div className="space-y-3">
             <p className="font-semibold">{title}</p>
-            <SocialLink Icon={BsInstagram} href="#" text="Instagram" />
-            <SocialLink Icon={MdMail} href="#" text="Email" />
+            <SocialLink Icon={BsInstagram}  href={`https://www.instagram.com/${instagramName}`} text={instagramName} />
+            <SocialLink Icon={MdMail} href={`mailto:${emailAddress}`} text={emailAddress} />
         </div>
     );
 }

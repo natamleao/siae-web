@@ -1,3 +1,5 @@
+import { CiCircleQuestion } from "react-icons/ci";
+
 
 export function Header() {
     return (
@@ -7,6 +9,7 @@ export function Header() {
                 <p className="font-bold">SIAE</p>
             </div>
             <div>
+                <CiCircleQuestion className="inline mr-2 w-8 h-8 text-white"/>
                 <a href="#" className="font-bold border-b-2 border-transparent hover:border-white transition-all duration-500">
                     Sobre o Auxílio
                 </a>

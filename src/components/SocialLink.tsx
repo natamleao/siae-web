@@ -1,15 +1,24 @@
-import type { IconType } from "react-icons";
-
 interface SocialLinkProps {
-    Icon: IconType;
+    Icon?: React.ElementType;
     href: string;
     text: string;
+    variant?: 'light' | 'dark';
 }
 
-export default function SocialLink({ Icon, href, text }: SocialLinkProps) {
+export default function SocialLink({
+    Icon,
+    href,
+    text,
+    variant = 'light'
+}: SocialLinkProps) {
     return (
-        <a href={href} className="flex flex-row items-center space-x-2 border-b-1 pb-1 border-transparent hover:border-white transition-all duration-500">
-            <Icon />
+        <a
+            href={href}
+            className={`flex flex-row items-center space-x-2 border-b pb-1
+                border-transparent transition-all duration-500
+                 ${variant === 'light' ? 'hover:border-white' : 'hover:border-[#1c335e]'}`}
+        >
+            {Icon && <Icon />}
             <p>{text}</p>
         </a>
     );
