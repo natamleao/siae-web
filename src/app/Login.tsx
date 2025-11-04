@@ -19,7 +19,7 @@ export function Login() {
             <section className="bg-white flex-grow flex w-full justify-center items-center">
                 <div className="w-1/2 flex flex-col items-center justify-center">
                     <img className="w-25 h-25" src="icone.png" alt="Ícone da Assistencia estudantil da UFC - Campus Russas" />
-                    <h1 className="text-black text-3xl font-semibold max-w-8/12 text-center mt-8 mb-14">Sistema Integrado da Assistência Estudantil</h1>
+                    <h2 className="text-black text-3xl font-semibold max-w-8/12 text-center mt-8 mb-14">Sistema Integrado da Assistência Estudantil</h2>
                     <img className="w-40 h-10" src="brasao.png" alt="brasão da Universidade Federal do ceará" />
                 </div>
                 <div className="w-[0.5px] h-80 bg-gray-300"></div>
