@@ -14,7 +14,7 @@ export function Login() {
     };
 
     return (
-        <main className="flex flex-col min-h-screen">
+        <main className="flex flex-col min-h-screen max-lg:h-screen">
             <Header />
             <section className="bg-white flex-grow flex w-full justify-center items-center">
                 <div className="w-1/2 flex flex-col items-center justify-center max-md:hidden">

@@ -16,8 +16,8 @@ export function Footer() {
                         em parceria com a Assistência Estudantil da UFC - Campus Russas.</p>
                 </section>
             </section>
-            <section className="flex flex-row justify-around items-center py-3 bg-[#d1d1d1] max-md:flex-col max-lg:space-y-3 max-lg:h-33">
-                 <div className="flex flex-row space-x-20">
+            <section className="flex flex-row justify-around items-center py-3 bg-[#d1d1d1] max-md:flex-col max-lg:space-y-1 max-lg:hidden">
+                 <div className="flex flex-row space-x-20 max-lg:space-x-10">
                     <img className="w-40 h-10" src="brasao.png" alt="brasão da Universidade Federal do ceará" />
                     <img className="w-40 h-10" src="icone-horizontal.png" alt="Ícone da Assistencia estudantil da UFC - Campus Russas" />
                 </div>
