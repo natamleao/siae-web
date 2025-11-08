@@ -1,5 +1,5 @@
 import SocialGroup from "./SocialGroup";
-import SocialLink from "./socialLink";
+import SocialLink from "./SocialLink";
 
 export function Footer() {
     return (
