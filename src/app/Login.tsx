@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { InputField } from "../components/Input"; 
 import React from 'react';
@@ -48,7 +49,10 @@ export function Login() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                                <a href="#" className="underline text-blue-800">Esqueceu a senha?</a>
+                                
+                                <Link to="/recuperar-senha" className="underline text-blue-800">
+                                    Esqueceu a senha?
+                                </Link>
                             </div>
 
                         </div>

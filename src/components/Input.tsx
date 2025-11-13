@@ -7,6 +7,8 @@ interface InputProps {
     value: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
+    placeholder?: string;
+    disabled?: boolean;
 }
 
 export const InputField: React.FC<InputProps> = ({
@@ -15,7 +17,9 @@ export const InputField: React.FC<InputProps> = ({
     type,
     value,
     onChange,
-    required = false
+    required = false,
+    placeholder,
+    disabled
 }) => {
     return (
         <div className="flex flex-col space-y-0.5 w-full">
@@ -29,6 +33,8 @@ export const InputField: React.FC<InputProps> = ({
                 value={value}
                 onChange={onChange}
                 required={required}
+                placeholder={placeholder}
+                disabled={disabled}
             />
         </div>
     );
