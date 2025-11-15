@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { InputField } from "../components/Input"; 
 import React from 'react';
 import { Header } from "../components/Header";
@@ -16,7 +17,7 @@ export function Login() {
     return (
         <main className="flex flex-col min-h-screen max-lg:h-screen">
             <Header />
-            <section className="bg-white flex-grow flex w-full justify-center items-center">
+            <section className="bg-white grow flex w-full justify-center items-center">
                 <div className="w-1/2 flex flex-col items-center justify-center max-md:hidden">
                     <img className="w-25 h-25" src="icone.png" alt="Ícone da Assistencia estudantil da UFC - Campus Russas" />
                     <h2 className="text-black text-3xl font-semibold max-w-8/12 text-center mt-8 mb-14">Sistema Integrado da Assistência Estudantil</h2>
@@ -58,7 +59,8 @@ export function Login() {
                         <div className="bg-gray-400 h-0.5 w-2/4 my-3"></div>
                         <div className="text-center">
                             <p>Não possui cadastro?</p>
-                            <a href="#" className="underline text-blue-800">Cadastre-se aqui</a>
+
+                            <Link to="/cadastro" className="underline text-blue-800">Cadastre-se aqui</Link>
                         </div>
                     </form>
                 </div>
