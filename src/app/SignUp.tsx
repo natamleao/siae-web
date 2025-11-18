@@ -41,7 +41,7 @@ export function SignUp() {
                 <InputField
                   id="matricula"
                   label="Matrícula"
-                  type="text"
+                  type="number"
                   value={matricula}
                   onChange={(e) => setMatricula(e.target.value)}
                   required
