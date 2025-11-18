@@ -24,7 +24,7 @@ export const InputField: React.FC<InputProps> = ({
             </label>
             <input
                 id={id}
-                className="border-1 rounded-md px-3 py-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                className="border rounded-md px-3 py-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                 type={type}
                 value={value}
                 onChange={onChange}
