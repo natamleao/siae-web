@@ -1,20 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Login } from './Login';
-import { RecuperarSenha } from './RecuperarSenha';
+import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { Login } from "./Login";
+import { SignUp } from "./SignUp";
+import { RecuperarSenha } from "./RecuperarSenha";
 
 export default function App() {
     return (
-        
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Login />} /> 
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/cadastro" element={<SignUp/>}/>
+            <Route path="/recuperar-senha" element={<RecuperarSenha />} />
 
-                <Route path="/recuperar-senha" element={<RecuperarSenha />} />
-
-                {/* adicionar mais rotas aqui, como o cadastro:
-                <Route path="/cadastro" element={<Register />} />
-                */}
-            </Routes>
-        </BrowserRouter>
+          </Routes>
+        </BrowserRouter>        
     );
 }

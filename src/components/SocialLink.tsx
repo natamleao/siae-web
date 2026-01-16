@@ -19,7 +19,7 @@ export default function SocialLink({
                  ${variant === 'light' ? 'hover:border-white' : 'hover:border-[#1c335e]'}`}
         >
             {Icon && <Icon />}
-            <p>{text}</p>
+            <p className="max-md:underline">{text.length > 25 ? `${text.substring(0,25)}...` : text}</p>
         </a>
     );
 }

@@ -1,6 +1,6 @@
 import { BsInstagram } from "react-icons/bs";
 import { MdMail } from "react-icons/md";
-import SocialLink from "./socialLink";
+import SocialLink from "./SocialLink";
 
 
 interface SocialGroupProps {
