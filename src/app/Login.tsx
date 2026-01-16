@@ -1,23 +1,71 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { InputField } from "../components/Input"; 
 import React from 'react';
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
+import { ERROR_MESSAGES, TIMINGS } from "../config/constants";
+import { useAuthContext } from "../context/AuthContext";
+
 
 export function Login() {
     const [identifier, setIdentifier] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [loading, setLoading] = useState(false);
+    const [identifierError, setIdentifierError] = useState<string>('');
+    const navigate = useNavigate();
+    const { isAuthenticated, login } = useAuthContext();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setIdentifier(value);
+        
+        if (value && !validateEmail(value)) {
+            setIdentifierError(ERROR_MESSAGES.INVALID_CREDENTIALS);
+        } else {
+            setIdentifierError('');
+        }
+    };
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log({ identifier, password });
+        
+        if (!validateEmail(identifier)) {
+            setIdentifierError(ERROR_MESSAGES.INVALID_CREDENTIALS);
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            await login(identifier, password);
+            toast.success('Login realizado com sucesso!');
+            console.log('Login bem-sucedido');
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1000);
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error(ERROR_MESSAGES.SERVER_ERROR);
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <main className="flex flex-col min-h-screen max-lg:h-screen">
             <Header />
+            <ToastContainer />
             <section className="bg-white grow flex w-full justify-center items-center">
                 <div className="w-1/2 flex flex-col items-center justify-center max-md:hidden">
                     <img className="w-25 h-25" src="icone.png" alt="Ícone da Assistencia estudantil da UFC - Campus Russas" />
@@ -33,10 +81,11 @@ export function Login() {
                             <div className="w-2/4 max-md:w-3/4">
                                 <InputField
                                     id="identifier"
-                                    label="Matrícula ou SIAPE"
-                                    type="number"
+                                    label="Email"
+                                    type="email"
                                     value={identifier}
-                                    onChange={(e) => setIdentifier(e.target.value)}
+                                    onChange={handleIdentifierChange}
+                                    error={identifierError}
                                     required
                                 />
                             </div>
@@ -58,12 +107,21 @@ export function Login() {
 
                         </div>
                         <div className="w-2/4 flex justify-center my-7">
-                            <button type="submit" className="bg-gray-400 w-2/4 rounded-md p-2 font-semibold hover:bg-blue-700 transition-all duration-300 hover:text-white">Entrar</button>
+                            <button 
+                                type="submit" 
+                                disabled={loading || !!identifierError}
+                                className={`w-2/4 rounded-md p-2 font-semibold transition-all duration-300 ${
+                                    loading || identifierError
+                                    ? 'bg-gray-300 cursor-not-allowed' 
+                                    : 'bg-gray-400 hover:bg-blue-700 hover:text-white'
+                                }`}
+                            >
+                                {loading ? 'Entrando...' : 'Entrar'}
+                            </button>
                         </div>
                         <div className="bg-gray-400 h-0.5 w-2/4 my-3"></div>
                         <div className="text-center">
                             <p>Não possui cadastro?</p>
-
                             <Link to="/cadastro" className="underline text-blue-800">Cadastre-se aqui</Link>
                         </div>
                     </form>

@@ -3,125 +3,77 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { InputField } from '../components/Input';
 import { Link } from 'react-router-dom';
-
-const MAX_ATTEMPTS = 3;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutos
-
-function FeedbackModal({ message, type }: { message: string | null, type: 'success' | 'error' | 'loading' | null }) {
-    if (!message) return null;
-    
-    const baseStyle = "absolute top-4 w-1/2 p-3 text-center rounded shadow-lg z-10";
-    let style = baseStyle;
-    
-    if (type === 'success') style += ' bg-green-100 text-green-800';
-    if (type === 'error') style += ' bg-red-100 text-red-800';
-    if (type === 'loading') style += ' bg-blue-100 text-blue-800';
-    
-    return (
-        <div className="flex justify-center w-full">
-            <div className={style}>
-                {type === 'loading' ? "Processando solicitação..." : message}
-            </div>
-        </div>
-    );
-}
+import { toast, ToastContainer } from 'react-toastify';
+import { authService } from '../services/authService';
+import { AUTH, ERROR_MESSAGES, TIMINGS } from '../config/constants';
+import { useAuth } from '../hooks/useAuth';
 
 export function RecuperarSenha() {
     const [identifier, setIdentifier] = useState<string>('');
-    const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
-    const [feedbackType, setFeedbackType] = useState<'success' | 'error' | 'loading' | null>(null);
+    const [loading, setLoading] = useState(false);
     const [isEmailMode, setIsEmailMode] = useState(true);
-
-    const [lockoutEnd, setLockoutEnd] = useState<number>(() => {
-        const storedTime = localStorage.getItem('siae_lockout_end');
-        return storedTime ? parseInt(storedTime, 10) : 0;
-    });
     const [timeLeft, setTimeLeft] = useState<number>(0);
-    const isLockedOut = lockoutEnd > Date.now();
+    
+    const { isLockedOut, getLockoutTimeRemaining } = useAuth();
 
     useEffect(() => {
         let timer: number | null = null;
         
-        if (isLockedOut) {
-            const remaining = lockoutEnd - Date.now();
+        if (isLockedOut()) {
+            const remaining = getLockoutTimeRemaining();
             setTimeLeft(Math.max(0, remaining));
 
-            timer = setInterval(() => {
-                const currentRemaining = lockoutEnd - Date.now();
+            timer = window.setInterval(() => {
+                const currentRemaining = getLockoutTimeRemaining();
                 if (currentRemaining <= 0) {
-                    localStorage.removeItem('siae_lockout_end');
-                    localStorage.removeItem('siae_fail_count');
-                    clearInterval(timer!);
-                    setLockoutEnd(0);
+                    if (timer) clearInterval(timer);
+                    setTimeLeft(0);
+                } else {
+                    setTimeLeft(Math.max(0, currentRemaining));
                 }
-                setTimeLeft(Math.max(0, currentRemaining));
             }, 1000);
         }
 
         return () => {
             if (timer) clearInterval(timer);
         };
-    }, [lockoutEnd, isLockedOut]);
+    }, [isLockedOut, getLockoutTimeRemaining]);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (isLockedOut) return; 
+        if (isLockedOut()) return; 
 
-        setFeedbackMessage(null); 
-        setFeedbackType('loading');
+        setLoading(true);
 
-        setTimeout(() => {
-            const userExists = identifier.toLowerCase().includes('sucesso') || identifier.toLowerCase().includes('alu.ufc.br');
-            const systemFailed = Math.random() < 0.1;
-            
-            if (lockoutEnd > Date.now()) {
-                setFeedbackMessage(`Muitas tentativas falhas. Tente novamente em 15 minutos.`);
-                setFeedbackType('error');
-                return;
-            }
+        try {
+            const response = await authService.forgotPassword(identifier);
+            toast.success(response.message || 'Email de recuperação enviado!');
+            setIdentifier('');
 
-            if (systemFailed) {
-                setFeedbackMessage("Não foi possível enviar o link. Tente novamente mais tarde.");
-                setFeedbackType('error');
-                return;
-            }
-            
-            if (!userExists) {
-                let failCount = parseInt(localStorage.getItem('siae_fail_count') || '0', 10) + 1;
-                localStorage.setItem('siae_fail_count', failCount.toString());
-
-                if (failCount >= MAX_ATTEMPTS) {
-                    const newLockoutEnd = Date.now() + LOCKOUT_DURATION_MS;
-                    localStorage.setItem('siae_lockout_end', newLockoutEnd.toString());
-                    setLockoutEnd(newLockoutEnd);
-                    setFeedbackMessage(`Você excedeu o limite de ${MAX_ATTEMPTS} tentativas. Tente novamente em 15 minutos.`);
-                    setFeedbackType('error');
-                } else {
-                    setFeedbackMessage("Usuário não encontrado. Verifique os dados informados.");
-                    setFeedbackType('error');
-                }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error(error.message);
             } else {
-                localStorage.removeItem('siae_fail_count');
-                setFeedbackMessage("Enviamos instruções de redefinição de senha para seu e-mail institucional.");
-                setFeedbackType('success');
+                toast.error(ERROR_MESSAGES.SERVER_ERROR);
             }
-        }, 2000);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const isButtonDisabled = !identifier || feedbackType === 'loading' || isLockedOut;
+    const isButtonDisabled = !identifier || loading || isLockedOut();
     
     const secondsLeft = Math.ceil(timeLeft / 1000) % 60;
-    const minutesLeft = Math.ceil(timeLeft / 60000);
+    const minutesLeft = Math.floor(timeLeft / 60000);
 
     return (
         <main className="flex flex-col min-h-screen">
             <Header />
-            
-            <FeedbackModal message={feedbackMessage} type={feedbackType} /> 
+            <ToastContainer />
 
-            <section className="bg-white flex-grow flex w-full justify-center items-center p-8">
-                <div className="max-w-4xl w-full rounded-lg shadow-2xl overflow-hidden flex flex-row border-2 border-gray-400">
+            <section className="bg-white flex-grow flex w-full justify-center items-center p-6">
+                <div className="max-w-6xl w-full rounded-lg shadow-2xl overflow-hidden flex flex-row border-2 border-gray-400">
                     
                     <div className="w-1/2 p-10 flex flex-col justify-center bg-gray-50">
                         
@@ -137,18 +89,18 @@ export function RecuperarSenha() {
                                 id="identifier"
                                 label={isEmailMode ? "E-mail institucional" : "Matrícula ou SIAPE"}
                                 type={isEmailMode ? "email" : "number"}
-                                placeholder="ex:aluno@alu.ufc.br"
+                                placeholder={isEmailMode ? "ex:aluno@alu.ufc.br" : "ex: 12345678"}
                                 value={identifier}
                                 onChange={(e) => setIdentifier(e.target.value)}
                                 required
-                                disabled={isLockedOut}
+                                disabled={isLockedOut()}
                             />
                             
                             <button
                                 type="button"
                                 onClick={() => setIsEmailMode(!isEmailMode)}
-                                className="text-sm text-blue-700 underline self-start mt-1"
-                                disabled={isLockedOut}
+                                className="text-sm text-blue-700 underline self-start mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isLockedOut()}
                             >
                                 {isEmailMode ? "Usar Matrícula/Siape" : "Usar E-mail Institucional"}
                             </button>
@@ -158,14 +110,16 @@ export function RecuperarSenha() {
                                 disabled={isButtonDisabled}
                                 className={`
                                     mt-6 p-3 rounded-md font-semibold transition-all duration-300 w-full text-white 
-                                    bg-blue-600 hover:bg-blue-700 cursor-pointer
-                                    ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''} 
+                                    ${isButtonDisabled 
+                                        ? 'bg-gray-400 cursor-not-allowed opacity-50' 
+                                        : 'bg-blue-600 hover:bg-blue-700'
+                                    } 
                                 `}
                             >
-                                {isLockedOut 
+                                {isLockedOut() 
                                     ? `Bloqueado (${minutesLeft}m ${secondsLeft}s)` 
-                                    : feedbackType === 'loading' 
-                                        ? 'Processando solicitação...' 
+                                    : loading 
+                                        ? 'Processando...' 
                                         : 'Redefinir senha'
                                 }
                             </button>
