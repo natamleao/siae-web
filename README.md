@@ -117,6 +117,7 @@ cd siae-web
 2️⃣ Instalar as dependências
 ```bash
 pnpm install
+pnpm add react-icons
 ```
 
 3️⃣ Executar o servidor de desenvolvimento
