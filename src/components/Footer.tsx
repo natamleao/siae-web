@@ -4,7 +4,7 @@ import SocialLink from "./SocialLink";
 export function Footer() {
     return (
         <footer className="">
-            <section className="flex flex-row items-center justify-center bg-[#1c335e] text-xs">
+            <section className="flex flex-row items-center justify-center bg-[#021c4c] text-xs">
                 <section className="flex flex-row justify-center items-center space-x-20 font-semibold w-1/2 h-36 max-lg:w-full max-lg:space-x-5">
                     <SocialGroup title="Assistência Estudantil" emailAddress="assistenciaestudantilufcrussas@gmail.com" instagramName="ae.ufcrussas" />
                     <SocialGroup title="LUDI" emailAddress="beatriz.marques@ufc.br" instagramName="ludi.ufc" />

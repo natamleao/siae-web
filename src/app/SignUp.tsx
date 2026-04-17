@@ -1,105 +1,195 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { InputField } from "../components/Input";
+import { authService } from "../services/authService";
+import { ERROR_MESSAGES, TIMINGS, AUTH } from "../config/constants";
 
 export function SignUp() {
-  const [matricula, setMatricula] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
+    const [matricula, setMatricula] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const navigate = useNavigate();
 
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    // TODO: implementar chamada pra API de cadastro
-  }
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
-  const isDisabled = false;
+    const validateForm = (): boolean => {
+        const newErrors: Record<string, string> = {};
 
-  return (
-    <main className="flex flex-col min-h-screen max-lg:h-screen">
-      <Header />
+        if (!matricula) {
+            newErrors.matricula = 'Matrícula é obrigatória';
+        } else if (!/^\d+$/.test(matricula)) {
+            newErrors.matricula = 'Matrícula deve conter apenas números';
+        }
 
-      <section className="bg-white grow flex w-full justify-center items-center py-12">
-        <div className="text-black w-full flex flex-col justify-center items-center">
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col w-full items-center"
-          >
-            <h2 className="font-bold text-2xl mb-6">Crie sua conta</h2>
+        if (!email) {
+            newErrors.email = 'Email é obrigatório';
+        } else if (!validateEmail(email)) {
+            newErrors.email = 'Email inválido';
+        }
 
-            <div className="w-2/4 max-md:w-3/4 mb-6">
-              <div className="bg-gray-200 rounded p-1">
-                <div className="bg-blue-600 text-white text-sm font-medium text-center py-2 rounded">
-                  Estudante
+        if (!senha) {
+            newErrors.senha = 'Senha é obrigatória';
+        } else if (!authService.validatePasswordStrength(senha)) {
+            newErrors.senha = ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH;
+        }
+
+        if (!confirmacaoSenha) {
+            newErrors.confirmacaoSenha = 'Confirmação de senha é obrigatória';
+        } else if (senha !== confirmacaoSenha) {
+            newErrors.confirmacaoSenha = ERROR_MESSAGES.PASSWORD_MISMATCH;
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    async function handleSubmit(event: FormEvent) {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await authService.register(email, senha, matricula);
+            toast.success(response.message || 'Cadastro realizado com sucesso!');
+
+            setTimeout(() => navigate("/"), TIMINGS.REDIRECT_DELAY);
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error(ERROR_MESSAGES.SERVER_ERROR);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const isDisabled = loading || !email || !senha || !matricula || !confirmacaoSenha || Object.keys(errors).length > 0;
+
+    return (
+        <main className="flex flex-col min-h-screen max-lg:h-screen">
+            <Header />
+            <ToastContainer />
+            <section className="bg-white grow flex w-full justify-center items-center py-12">
+                <div className="text-black w-full flex flex-col justify-center items-center">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col w-full items-center"
+                    >
+                        <h2 className="font-bold text-2xl mb-6">Crie sua conta</h2>
+
+                        <div className="w-2/4 max-md:w-3/4 mb-6">
+                            <div className="bg-gray-200 rounded p-1">
+                                <div className="bg-blue-600 text-white text-sm font-medium text-center py-2 rounded">
+                                    Estudante
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col w-full items-center space-y-4">
+                            <div className="w-2/4 max-md:w-3/4">
+                                <InputField
+                                    id="matricula"
+                                    label="Matrícula"
+                                    type="number"
+                                    value={matricula}
+                                    onChange={(e) => {
+                                        setMatricula(e.target.value);
+                                        if (errors.matricula) {
+                                            setErrors({ ...errors, matricula: '' });
+                                        }
+                                    }}
+                                    error={errors.matricula}
+                                    required
+                                />
+                            </div>
+
+                            <div className="w-2/4 max-md:w-3/4">
+                                <InputField
+                                    id="email"
+                                    label="Email institucional"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        if (errors.email) {
+                                            setErrors({ ...errors, email: '' });
+                                        }
+                                    }}
+                                    error={errors.email}
+                                    placeholder="aluno@alu.ufc.br"
+                                    required
+                                />
+                            </div>
+
+                            <div className="w-2/4 max-md:w-3/4">
+                                <InputField
+                                    id="password"
+                                    label="Senha"
+                                    type="password"
+                                    value={senha}
+                                    onChange={(e) => {
+                                        setSenha(e.target.value);
+                                        if (errors.senha) {
+                                            setErrors({ ...errors, senha: '' });
+                                        }
+                                    }}
+                                    error={errors.senha}
+                                    hint="Mínimo 8 caracteres, uma letra maiúscula e um número"
+                                    required
+                                />
+                            </div>
+
+                            <div className="w-2/4 max-md:w-3/4">
+                                <InputField
+                                    id="confirmPassword"
+                                    label="Confirme sua senha"
+                                    type="password"
+                                    value={confirmacaoSenha}
+                                    onChange={(e) => {
+                                        setConfirmacaoSenha(e.target.value);
+                                        if (errors.confirmacaoSenha) {
+                                            setErrors({ ...errors, confirmacaoSenha: '' });
+                                        }
+                                    }}
+                                    error={errors.confirmacaoSenha}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="w-2/4 max-md:w-3/4 flex justify-center mt-8">
+                            <button
+                                type="submit"
+                                disabled={isDisabled}
+                                className={`w-full rounded-md p-2 font-semibold transition-all duration-300 ${
+                                    isDisabled 
+                                    ? 'bg-gray-400 cursor-not-allowed text-black' 
+                                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                                }`}
+                            >
+                                {loading ? "Cadastrando..." : "Cadastrar"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-              </div>
-            </div>
+            </section>
 
-            <div className="flex flex-col w-full items-center space-y-4">
-              <div className="w-2/4 max-md:w-3/4">
-                <InputField
-                  id="matricula"
-                  label="Matrícula"
-                  type="number"
-                  value={matricula}
-                  onChange={(e) => setMatricula(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="w-2/4 max-md:w-3/4">
-                <InputField
-                  id="email"
-                  label="Email institucional"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="w-2/4 max-md:w-3/4">
-                <InputField
-                  id="password"
-                  label="Senha"
-                  type="password"
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
-                  required
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  Informe uma senha com pelo menos 8 dígitos, uma letra maiúscula e um
-                  número.
-                </p>
-              </div>
-
-              <div className="w-2/4 max-md:w-3/4">
-                <InputField
-                  id="confirmPassword"
-                  label="Confirme sua senha"
-                  type="password"
-                  value={confirmacaoSenha}
-                  onChange={(e) => setConfirmacaoSenha(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="w-2/4 max-md:w-3/4 flex justify-center mt-8">
-              <button
-                type="submit"
-                disabled={isDisabled}
-                className="bg-gray-400 w-full rounded-md p-2 font-semibold text-black disabled:cursor-not-allowed"
-              >
-                Cadastrar
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
-  );
+            <Footer />
+        </main>
+    );
 }
