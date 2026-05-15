@@ -9,6 +9,7 @@ import { ERROR_MESSAGES, TIMINGS, AUTH } from "../config/constants";
 
 export function SignUp() {
     const [matricula, setMatricula] = useState("");
+    const [nomeCompleto, setNomeCompleto] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
@@ -28,6 +29,10 @@ export function SignUp() {
             newErrors.matricula = 'Matrícula é obrigatória';
         } else if (!/^\d+$/.test(matricula)) {
             newErrors.matricula = 'Matrícula deve conter apenas números';
+        }
+
+        if (!nomeCompleto) {
+            newErrors.nomeCompleto = 'Nome completo é obrigatório';
         }
 
         if (!email) {
@@ -78,7 +83,8 @@ export function SignUp() {
         }
     }
 
-    const isDisabled = loading || !email || !senha || !matricula || !confirmacaoSenha || Object.keys(errors).length > 0;
+    const hasErrors = Object.values(errors).some(Boolean);
+    const isDisabled = loading || !email || !senha || !matricula || !confirmacaoSenha || hasErrors;
 
     return (
         <main className="flex flex-col min-h-screen max-lg:h-screen">
@@ -92,20 +98,39 @@ export function SignUp() {
                     >
                         <h2 className="font-bold text-2xl mb-6">Crie sua conta</h2>
 
-                        <div className="w-2/4 max-md:w-3/4 mb-6">
+                        {/* <div className="w-2/4 max-md:w-3/4 mb-6">
                             <div className="bg-gray-200 rounded p-1">
                                 <div className="bg-blue-600 text-white text-sm font-medium text-center py-2 rounded">
                                     Estudante
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="flex flex-col w-full items-center space-y-4">
-                            <div className="w-2/4 max-md:w-3/4">
+                            <div className="w-1/3 max-md:w-3/4">
+                                <InputField
+                                    id="nomeCompleto"
+                                    label="Nome Completo"
+                                    type="text"
+                                    placeholder="Seu nome completo"
+                                    value={nomeCompleto}
+                                    onChange={(e) => {
+                                        setNomeCompleto(e.target.value);
+                                        if (errors.nomeCompleto) {
+                                            setErrors({ ...errors, nomeCompleto: '' });
+                                        }
+                                    }}
+                                    error={errors.nomeCompleto}
+                                    required
+                                />
+                            </div>
+
+                            <div className="w-1/3 max-md:w-3/4">
                                 <InputField
                                     id="matricula"
                                     label="Matrícula"
                                     type="number"
+                                    placeholder="Sua matrícula no SIGAA"
                                     value={matricula}
                                     onChange={(e) => {
                                         setMatricula(e.target.value);
@@ -118,10 +143,10 @@ export function SignUp() {
                                 />
                             </div>
 
-                            <div className="w-2/4 max-md:w-3/4">
+                            <div className="w-1/3 max-md:w-3/4">
                                 <InputField
                                     id="email"
-                                    label="Email institucional"
+                                    label="E-mail institucional"
                                     type="email"
                                     value={email}
                                     onChange={(e) => {
@@ -131,12 +156,12 @@ export function SignUp() {
                                         }
                                     }}
                                     error={errors.email}
-                                    placeholder="aluno@alu.ufc.br"
+                                    placeholder="seuemail@alu.ufc.br"
                                     required
                                 />
                             </div>
 
-                            <div className="w-2/4 max-md:w-3/4">
+                            <div className="w-1/3 max-md:w-3/4">
                                 <InputField
                                     id="password"
                                     label="Senha"
@@ -151,10 +176,11 @@ export function SignUp() {
                                     error={errors.senha}
                                     hint="Mínimo 8 caracteres, uma letra maiúscula e um número"
                                     required
+                                    placeholder="Digite sua senha"
                                 />
                             </div>
 
-                            <div className="w-2/4 max-md:w-3/4">
+                            <div className="w-1/3 max-md:w-3/4">
                                 <InputField
                                     id="confirmPassword"
                                     label="Confirme sua senha"
@@ -172,11 +198,11 @@ export function SignUp() {
                             </div>
                         </div>
 
-                        <div className="w-2/4 max-md:w-3/4 flex justify-center mt-8">
+                        <div className="w-1/3 max-md:w-3/4 flex justify-center mt-8">
                             <button
                                 type="submit"
                                 disabled={isDisabled}
-                                className={`w-full rounded-md p-2 font-semibold transition-all duration-300 ${
+                                className={`w-1/2 mx-auto rounded-md p-2 font-semibold transition-all duration-300 ${
                                     isDisabled 
                                     ? 'bg-gray-400 cursor-not-allowed text-black' 
                                     : 'bg-blue-600 text-white hover:bg-blue-700'
