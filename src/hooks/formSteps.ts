@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-export function formStepHook(totalSteps: number) {
-  const [currentStep, setCurrentStep] = useState(1)
+export function FormStepHook(totalSteps: number) {
+  const [currentStep, setCurrentStep] = useState(0)
 
   function nextStep() {
     if (currentStep < totalSteps - 1) {
@@ -23,13 +23,10 @@ export function formStepHook(totalSteps: number) {
 
   return {
     currentStep,
-
     nextStep,
     previousStep,
     goToStep,
-
     progress,
-
     isFirstStep: currentStep === 0,
     isLastStep: currentStep === totalSteps - 1,
   }

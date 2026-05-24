@@ -4,6 +4,7 @@ import { SignUp } from "./SignUp";
 import { RecuperarSenha } from "./RecuperarSenha";
 import { Dashboard } from "./Dashboard";
 import { Formulario } from "./formulario";
+import { IdentificacaoPessoal } from "../components/forms/IdentificacaoPessoal";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { PublicRoute } from "../components/PublicRoute";
 import { AuthProvider } from "../context/AuthContext";

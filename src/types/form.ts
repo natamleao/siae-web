@@ -1,1 +1,1 @@
-export * from "./forms/personal"
+export type { PersonalData } from "./forms/personal"

@@ -10,10 +10,10 @@ export function Stepper({ totalSteps, currentStep, title }: StepperProps) {
   const steps = Array.from({ length: totalSteps }, (_, index) => index + 1)
 
   return (
-    <section className="w-full bg-white px-4 py-8 sm:px-8">
+    <section className="w-full bg-white px-4 pt-8 sm:px-8">
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-6 lg:flex-row lg:items-start lg:gap-10 relative">
-        <div className="flex-1 lg:pr-10 w-full">
-          <header className="mx-auto flex  max-w-[720px] flex-col items-center gap-4">
+        <div className="flex-1  w-full">
+          <header className="mx-auto flex  max-w-[720px] flex-col items-center gap-2">
             <h1 className="text-center text-lg sm:text-xl md:text-2xl lg:text-[2.125rem] mb-3 font-semibold tracking-tight text-black">
               {title}
             </h1>
