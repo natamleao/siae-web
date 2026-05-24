@@ -1,47 +1,41 @@
+import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
 import { useIdentificacaoPessoalForm } from "../../hooks/useIdentificacaoPessoalForm";
 
-export function IdentificacaoPessoal() {
+interface IdentificacaoPessoalProps {
+  onValidityChange?: (isValid: boolean) => void;
+  onAdvance?: () => void;
+  isLastStep?: boolean;
+  onSidebarActionsChange?: (actions: { onCancel: () => void; onSaveDraft: () => void }) => void;
+}
+
+export function IdentificacaoPessoal({ onValidityChange, onAdvance, isLastStep = false, onSidebarActionsChange }: IdentificacaoPessoalProps) {
   const {
     formData,
     errors,
     submitAttempted,
     valids,
+    isStepValid,
     handleInputChange,
     handleSaveDraft,
     handleCancel,
     handleSubmit,
-  } = useIdentificacaoPessoalForm();
+  } = useIdentificacaoPessoalForm({ isLastStep, onAdvance });
+
+  useEffect(() => {
+    onValidityChange?.(isStepValid);
+  }, [isStepValid, onValidityChange]);
+
+  useEffect(() => {
+    onSidebarActionsChange?.({ onCancel: handleCancel, onSaveDraft: handleSaveDraft });
+  }, [handleCancel, handleSaveDraft, onSidebarActionsChange]);
 
   return (
     <main className="flex flex-col min-h-screen">
       <ToastContainer />
-      <section className="bg-white grow flex w-full justify-center items-center pb-12 pt-7 px-4 relative">
-        <aside className="absolute hidden md:block" style={{ left: '72px', top: '106px', width: '223.53px', height: '127.12px' }}>
-          <div className="relative flex h-full flex-col rounded-md border border-gray-300 pt-5 p-3 bg-white shadow-sm text-gray-900">
-            <h3 className="absolute -top-2 left-3 bg-white px-1 text-sm font-medium text-gray-900">Outras opções</h3>
-            <div className="mt-auto flex flex-1 flex-col justify-center gap-3 pt-1 -translate-y-2">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="flex items-center justify-center rounded-md border-[0.84px] border-[#CE4650] bg-[#ECE8E8] p-0 leading-none text-[#000000] font-semibold mx-auto"
-                style={{ width: '176.96px', height: '28.16px', fontSize: '11.57px' }}
-              >
-                Cancelar preenchimento
-              </button>
-              <button
-                type="button"
-                onClick={handleSaveDraft}
-                className="flex items-center justify-center rounded-md border-[0.84px] border-[#1058CC] bg-[#ECE8E8] p-0 leading-none text-[#000000] font-semibold mx-auto"
-                style={{ width: '176.96px', height: '28.16px', fontSize: '11.57px' }}
-              >
-                Salvar e continuar depois
-              </button>
-            </div>
-          </div>
-        </aside>
+      <section className="bg-white grow flex w-full justify-center items-start pb-12 pt-7 px-4 relative">
         <div className="text-black w-full max-w-2xl">
           {/* <div className="mb-4">
             <h1 className="font-semibold text-4xl mb-2 text-center">Identificação Pessoal</h1>

@@ -6,6 +6,36 @@ import { formatCPF, validateCPF, formatDate, validateDate, formatPhone, validate
 
 type FormData = PersonalData;
 
+interface UseIdentificacaoPessoalFormOptions {
+	isLastStep?: boolean;
+	onAdvance?: () => void;
+}
+
+
+function computeStepValidity(formData: FormData, valids: Record<string, boolean>) {
+	return Boolean(
+		formData.nomeCompleto.trim()
+		&& formData.cpf.trim()
+		&& formData.rg.trim()
+		&& formData.dataNascimento.trim()
+		&& formData.responsavel.trim()
+		&& formData.nomeResponsavel.trim()
+		&& formData.sexo.trim()
+		&& formData.identidadeGenero.trim()
+		&& formData.orientacaoSexual.trim()
+		&& formData.etniaRacaCor.trim()
+		&& formData.estadoCivil.trim()
+		&& formData.temDeficiencia.trim()
+		&& formData.telefonePrincipal.trim()
+		&& formData.emailInstitucional.trim()
+		&& valids.cpf
+		&& valids.rg
+		&& valids.dataNascimento
+		&& valids.telefonePrincipal
+		&& valids.emailInstitucional
+	);
+}
+
 const initialFormData: FormData = {
 	nomeCompleto: "",
 	cpf: "",
@@ -24,7 +54,7 @@ const initialFormData: FormData = {
 	emailInstitucional: "",
 };
 
-export function useIdentificacaoPessoalForm() {
+export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: UseIdentificacaoPessoalFormOptions = {}) {
 	const [formData, setFormData] = useState<FormData>(initialFormData);
 	const [loading, setLoading] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -104,7 +134,12 @@ export function useIdentificacaoPessoalForm() {
 		try {
 			console.log("Dados do formulário:", formData);
 			toast.success("Identificação pessoal registrada com sucesso!");
-			setTimeout(() => navigate("/dashboard"), 2000);
+			if (isLastStep) {
+				setTimeout(() => navigate("/dashboard"), 2000);
+				return;
+			}
+
+			onAdvance?.();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				toast.error(error.message);
@@ -118,6 +153,7 @@ export function useIdentificacaoPessoalForm() {
 
 	const hasErrors = Object.values(errors).some(Boolean);
 	const isDisabled = loading || hasErrors;
+	const isStepValid = computeStepValidity(formData, valids);
 
 	return {
 		formData,
@@ -129,5 +165,6 @@ export function useIdentificacaoPessoalForm() {
 		handleCancel,
 		handleSubmit,
 		isDisabled,
+		isStepValid,
 	};
 }
