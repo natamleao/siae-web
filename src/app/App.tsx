@@ -4,7 +4,6 @@ import { SignUp } from "./SignUp";
 import { RecuperarSenha } from "./RecuperarSenha";
 import { Dashboard } from "./Dashboard";
 import { Formulario } from "./formulario";
-import { IdentificacaoPessoal } from "../components/forms/IdentificacaoPessoal";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { PublicRoute } from "../components/PublicRoute";
 import { AuthProvider } from "../context/AuthContext";
@@ -17,6 +16,7 @@ export default function App() {
                     <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/cadastro" element={<PublicRoute><SignUp /></PublicRoute>} />
                     <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
+                    {/* Passar pra rota privada depois q terminar */}
                     <Route path="/formulario" element={<PublicRoute><Formulario /></PublicRoute>} />
 
                     <Route element={<ProtectedRoute />}>

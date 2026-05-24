@@ -5,9 +5,10 @@ interface ButtonFormsProps {
   previousStep: () => void
   isFirstStep: boolean
   isLastStep: boolean
+  formId?: string
 }
 
-export default function ButtonForms({ nextStep, previousStep, isFirstStep, isLastStep}: ButtonFormsProps) {
+export default function ButtonForms({ nextStep, previousStep, isFirstStep, isLastStep, formId }: ButtonFormsProps) {
   const [loading, setLoading] = useState(false);
   const isDisabled = loading;
 
@@ -23,9 +24,10 @@ export default function ButtonForms({ nextStep, previousStep, isFirstStep, isLas
           Voltar
         </button>
         <button
-          type="submit"
+          type={isLastStep ? "submit" : "button"}
+          form={isLastStep ? formId : undefined}
           disabled={isDisabled}
-          onClick={nextStep}
+          onClick={isLastStep ? undefined : nextStep}
 
           className={`w-[220px] h-[35px] rounded-md font-semibold transition-all duration-300 ${isDisabled
               ? "bg-gray-400 cursor-not-allowed text-white"

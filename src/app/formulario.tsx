@@ -9,12 +9,13 @@ export function Formulario() {
   const steps = [
     {
       title: "Identificação Pessoal",
-      component: <IdentificacaoPessoal />
+      component: <IdentificacaoPessoal />,
+      formId: "identificacao-pessoal-form"
     }
   ]
 
-
   const { currentStep, nextStep, previousStep, isFirstStep, isLastStep, } = FormStepHook(7)
+
 
   return (
     <main>
@@ -30,6 +31,7 @@ export function Formulario() {
           previousStep={previousStep}
           isFirstStep={isFirstStep}
           isLastStep={isLastStep}
+          formId={steps[currentStep]?.formId}
         />
         <Footer />
       </section>
