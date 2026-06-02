@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { PersonalData } from "../types/forms/personal";
@@ -103,22 +103,22 @@ export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: U
 		});
 	};
 
-	const handleSaveDraft = () => {
+	const handleSaveDraft = useCallback(() => {
 		try {
 			localStorage.setItem("identificacaoPessoalDraft", JSON.stringify(formData));
 			toast.success("Rascunho salvo");
 		} catch {
 			toast.error("Erro ao salvar rascunho");
 		}
-	};
+	}, [formData]);
 
-	const handleCancel = () => {
+	const handleCancel = useCallback(() => {
 		if (confirm("Tem certeza que deseja cancelar o preenchimento?")) {
 			localStorage.removeItem("identificacaoPessoalDraft");
 			setFormData(initialFormData);
 			toast.info("Preenchimento cancelado");
 		}
-	};
+	}, []);
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
@@ -132,7 +132,7 @@ export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: U
 		setLoading(true);
 
 		try {
-			console.log("Dados do formulário:", formData);
+			// console.log("Dados do formulário:", formData);
 			toast.success("Identificação pessoal registrada com sucesso!");
 			if (isLastStep) {
 				setTimeout(() => navigate("/dashboard"), 2000);

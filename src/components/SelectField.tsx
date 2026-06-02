@@ -19,7 +19,7 @@ export function SelectField({ id, label, value, onChange, options, error, forceS
   const showBorderError = forceShowError && !value;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2  [&_label]:!text-[16px] [&_label]:!font-semibold [&_label]:!text-black">
       <label htmlFor={id} className="text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -27,7 +27,7 @@ export function SelectField({ id, label, value, onChange, options, error, forceS
         id={id}
         value={value}
         onChange={onChange}
-        className={`rounded-md border px-3 py-2 text-[16px] focus:outline-none focus:ring-1 ${
+        className={`rounded-md border px-3 py-[4.8px] text-[16px]  focus:outline-none focus:ring-1 ${
           showBorderError
             ? "border-red-500 text-[#636363] focus:border-red-500 focus:ring-red-500"
             : value

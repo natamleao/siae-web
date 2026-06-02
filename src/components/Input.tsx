@@ -46,7 +46,7 @@ export const InputField: React.FC<InputProps> = ({
     const showError = Boolean(error) && (touched || forceShowError);
 
     return (
-        <div className="flex flex-col space-y-0.5 w-full">
+        <div className="flex flex-col space-y-2 w-full [&_label]:!text-[16px] [&_label]:!font-semibold [&_label]:!text-black">
             <label htmlFor={id} className={`text-sm font-medium text-gray-700 ${labelClassName ?? ''}`}>
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}

@@ -3,7 +3,7 @@ import { Login } from "./Login";
 import { SignUp } from "./SignUp";
 import { RecuperarSenha } from "./RecuperarSenha";
 import { Dashboard } from "./Dashboard";
-import { Formulario } from "./formulario";
+import { Formulario } from "./Formulario";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { PublicRoute } from "../components/PublicRoute";
 import { AuthProvider } from "../context/AuthContext";
