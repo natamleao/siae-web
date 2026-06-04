@@ -1,167 +1,132 @@
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { AddressData } from "../types/forms/address";
 
-type FormData = AddressData;
+type FormData = {
+  situacaoMoradia: string;
+  logradouro: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  municipio: string;
+  estado: string;
+  municipioOrigemFamilia: string;
+  condicaoMoradiaAtual: string;
+};
 
-interface UseEnderecoMoradiaFormOptions {
-	isLastStep?: boolean;
-	onAdvance?: () => void;
-}
-
-function computeStepValidity(formData: FormData) {
-	return Boolean(
-		formData.situacaoMoradia.trim()
-		&& formData.logradouro.trim()
-		&& formData.numero.trim()
-		&& formData.bairro.trim()
-		&& formData.municipio.trim()
-		&& formData.estado.trim()
-		&& formData.municipioOrigemFamilia.trim()
-		&& formData.condicaoMoradiaAtual.trim()
-	);
+interface Options {
+  isLastStep?: boolean;
+  onAdvance?: () => void;
 }
 
 const initialFormData: FormData = {
-	situacaoMoradia: "",
-	logradouro: "",
-	numero: "",
-	complemento: "",
-	bairro: "",
-	municipio: "",
-	estado: "",
-	municipioOrigemFamilia: "",
-	condicaoMoradiaAtual: "",
+  situacaoMoradia: "",
+  logradouro: "",
+  numero: "",
+  complemento: "",
+  bairro: "",
+  municipio: "",
+  estado: "",
+  municipioOrigemFamilia: "",
+  condicaoMoradiaAtual: "",
 };
 
-export function useEnderecoMoradiaForm({ isLastStep = false, onAdvance }: UseEnderecoMoradiaFormOptions = {}) {
-	const [formData, setFormData] = useState<FormData>(initialFormData);
-	const [loading, setLoading] = useState(false);
-	const [errors, setErrors] = useState<Record<string, string>>({});
-	const [submitAttempted, setSubmitAttempted] = useState(false);
-	const [valids] = useState<Record<string, boolean>>({});
-	const navigate = useNavigate();
+function validateEndereco(formData: FormData, setErrors: (e: Record<string, string>) => void) {
+  const newErrors: Record<string, string> = {};
+  const required = "Campo obrigatório não preenchido.";
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-		const { id } = e.target;
-		const value = e.target.value;
+  if (!formData.situacaoMoradia.trim()) newErrors.situacaoMoradia = required;
+  if (!formData.logradouro.trim()) newErrors.logradouro = required;
+  if (!formData.numero.trim()) newErrors.numero = required;
+  if (!formData.bairro.trim()) newErrors.bairro = required;
+  if (!formData.municipio.trim()) newErrors.municipio = required;
+  if (!formData.estado.trim()) newErrors.estado = required;
+  if (!formData.condicaoMoradiaAtual.trim()) newErrors.condicaoMoradiaAtual = required;
 
-		setFormData((prev) => ({
-			...prev,
-			[id]: value,
-		}));
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+}
 
-		if (errors[id]) {
-			setErrors((prev) => ({
-				...prev,
-				[id]: "",
-			}));
-		}
-	};
+export function useEnderecoMoradiaForm({ isLastStep = false, onAdvance }: Options = {}) {
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const navigate = useNavigate();
 
-	const handleSaveDraft = () => {
-		try {
-			localStorage.setItem("enderecoMoradiaDraft", JSON.stringify(formData));
-			toast.success("Rascunho salvo");
-		} catch {
-			toast.error("Erro ao salvar rascunho");
-		}
-	};
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (errors[id]) {
+      setErrors((prev) => ({ ...prev, [id]: "" }));
+    }
+  };
 
-	const handleCancel = () => {
-		if (confirm("Tem certeza que deseja cancelar o preenchimento?")) {
-			localStorage.removeItem("enderecoMoradiaDraft");
-			setFormData(initialFormData);
-			toast.info("Preenchimento cancelado");
-		}
-	};
+  const handleSaveDraft = useCallback(() => {
+    try {
+      localStorage.setItem("enderecoMoradiaDraft", JSON.stringify(formData));
+      toast.success("Rascunho salvo");
+    } catch {
+      toast.error("Erro ao salvar rascunho");
+    }
+  }, [formData]);
 
-	const validateForm = (data: FormData): Record<string, string> => {
-		const newErrors: Record<string, string> = {};
+  const handleCancel = useCallback(() => {
+    if (confirm("Tem certeza que deseja cancelar o preenchimento?")) {
+      localStorage.removeItem("enderecoMoradiaDraft");
+      setFormData(initialFormData);
+      toast.info("Preenchimento cancelado");
+    }
+  }, []);
 
-		if (!data.situacaoMoradia.trim()) {
-			newErrors.situacaoMoradia = "Situação de moradia é obrigatória";
-		}
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setSubmitAttempted(true);
 
-		if (!data.logradouro.trim()) {
-			newErrors.logradouro = "Logradouro é obrigatório";
-		}
+    if (!validateEndereco(formData, setErrors)) {
+      toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+      return;
+    }
 
-		if (!data.numero.trim()) {
-			newErrors.numero = "Número é obrigatório";
-		}
+    setLoading(true);
+    try {
+      // console.log("Endereço e moradia:", formData);
+      toast.success("Endereço registrado com sucesso!");
+      if (isLastStep) {
+        setTimeout(() => navigate("/dashboard"), 1500);
+        return;
+      }
+      onAdvance?.();
+    } catch (error: unknown) {
+      if (error instanceof Error) toast.error(error.message);
+      else toast.error("Erro ao processar o endereço");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-		if (!data.bairro.trim()) {
-			newErrors.bairro = "Bairro é obrigatório";
-		}
+  const isStepValid = Boolean(
+    formData.situacaoMoradia.trim() &&
+    formData.logradouro.trim() &&
+    formData.numero.trim() &&
+    formData.bairro.trim() &&
+    formData.municipio.trim() &&
+    formData.estado.trim() &&
+    formData.condicaoMoradiaAtual.trim()
+  );
 
-		if (!data.municipio.trim()) {
-			newErrors.municipio = "Município é obrigatório";
-		}
+  const hasErrors = Object.values(errors).some(Boolean);
+  const isDisabled = loading || hasErrors;
 
-		if (!data.estado.trim()) {
-			newErrors.estado = "Estado é obrigatório";
-		}
-
-		if (!data.municipioOrigemFamilia.trim()) {
-			newErrors.municipioOrigemFamilia = "Município de origem da família é obrigatório";
-		}
-
-		if (!data.condicaoMoradiaAtual.trim()) {
-			newErrors.condicaoMoradiaAtual = "Condição de moradia atual é obrigatória";
-		}
-
-		return newErrors;
-	};
-
-	const handleSubmit = async (event: FormEvent) => {
-		event.preventDefault();
-		setSubmitAttempted(true);
-
-		const validationErrors = validateForm(formData);
-		if (Object.keys(validationErrors).length > 0) {
-			setErrors(validationErrors);
-			toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-			return;
-		}
-
-		setLoading(true);
-
-		try {
-			console.log("Dados do formulário de Endereço e Moradia:", formData);
-			toast.success("Informações salvas com sucesso");
-			if (isLastStep) {
-				setTimeout(() => navigate("/dashboard"), 2000);
-				return;
-			}
-
-			onAdvance?.();
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error("Erro ao processar o endereço e moradia");
-			}
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const hasErrors = Object.values(errors).some(Boolean);
-	const isDisabled = loading || hasErrors;
-	const isStepValid = computeStepValidity(formData);
-
-	return {
-		formData,
-		errors,
-		submitAttempted,
-		valids,
-		handleInputChange,
-		handleSaveDraft,
-		handleCancel,
-		handleSubmit,
-		isDisabled,
-		isStepValid,
-	};
+  return {
+    formData,
+    errors,
+    submitAttempted,
+    handleInputChange,
+    handleSaveDraft,
+    handleCancel,
+    handleSubmit,
+    isDisabled,
+    isStepValid,
+  };
 }

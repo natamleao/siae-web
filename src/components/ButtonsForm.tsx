@@ -13,7 +13,7 @@ export default function ButtonForms({ previousStep, isFirstStep, isLastStep, for
 
   return (
     <>
-      <div className="flex gap-4 justify-center my-8">
+      <div className="flex gap-4 justify-center mt-4 mb-7">
         <button
           type="button"
           disabled={isFirstStep}
