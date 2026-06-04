@@ -4,6 +4,7 @@ import { FormStepHook } from "../hooks/formSteps"
 import { Header } from "../components/Header"
 import ButtonForms from "../components/ButtonsForm"
 import { IdentificacaoPessoal } from "../components/forms/IdentificacaoPessoal"
+import { EnderecoMoradia } from "../components/forms/EnderecoMoradia"
 import { Footer } from "../components/Footer"
 import { FormSidebar } from "../components/FormSidebar"
 
@@ -16,6 +17,11 @@ export function Formulario() {
       title: "Identificação Pessoal",
       component: <IdentificacaoPessoal onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
       formId: "identificacao-pessoal-form"
+    },
+    {
+      title: "Endereço e Moradia",
+      component: <EnderecoMoradia onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
+      formId: "endereco-moradia-form"
     }
   ]
 

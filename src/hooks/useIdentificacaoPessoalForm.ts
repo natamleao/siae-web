@@ -133,7 +133,7 @@ export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: U
 
 		try {
 			console.log("Dados do formulário:", formData);
-			toast.success("Identificação pessoal registrada com sucesso!");
+			toast.success("Informações salvas com sucesso");
 			if (isLastStep) {
 				setTimeout(() => navigate("/dashboard"), 2000);
 				return;
