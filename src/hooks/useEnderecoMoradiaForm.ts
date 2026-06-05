@@ -83,10 +83,10 @@ export function useEnderecoMoradiaForm({ isLastStep = false, onAdvance }: Option
     event.preventDefault();
     setSubmitAttempted(true);
 
-    if (!validateEndereco(formData, setErrors)) {
-      toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-      return;
-    }
+    // if (!validateEndereco(formData, setErrors)) {
+    //   toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+    //   return;
+    // }
 
     setLoading(true);
     try {

@@ -5,6 +5,8 @@ import { Header } from "../components/Header"
 import ButtonForms from "../components/ButtonsForm"
 import { IdentificacaoPessoal } from "../components/forms/IdentificacaoPessoal"
 import { EnderecoMoradia } from "../components/forms/EnderecoMoradia"
+import { DadosAcademicos } from "../components/forms/DadosAcademicos"
+import { ComposicaoFamiliar } from "../components/forms/ComposicaoFamiliar"
 import { RendasDespesas } from "../components/forms/RendasDespesas"
 import { RelatoPessoal } from "../components/forms/RelatoPessoal"
 import { Footer } from "../components/Footer"
@@ -25,8 +27,16 @@ export function Formulario() {
       component: <EnderecoMoradia onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
       formId: "endereco-moradia-form"
     },
-    // dados academicos fica aqui
-    //composição familiar fica aqui
+    {
+      title: "Dados Acadêmicos",
+      component: <DadosAcademicos onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
+      formId: "dados-academicos-form"
+    },
+    {
+      title: "Composição Familiar",
+      component: <ComposicaoFamiliar onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
+      formId: "composicao-familiar-form"
+    },
     {
       title: "Rendas e Despesas",
       component: <RendasDespesas onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
@@ -38,6 +48,8 @@ export function Formulario() {
       component: <RelatoPessoal onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
       formId: "relato-pessoal-form"
     },
+
+
   ]
 
 

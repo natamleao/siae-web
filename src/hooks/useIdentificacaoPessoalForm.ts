@@ -124,10 +124,10 @@ export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: U
                 event.preventDefault();
                 setSubmitAttempted(true);
 
-                if (!validateForm(formData, setErrors)) {
-                        toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-                        return;
-                }
+                // if (!validateForm(formData, setErrors)) {
+                //         toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+                //         return;
+                // }
 
                 setLoading(true);
 

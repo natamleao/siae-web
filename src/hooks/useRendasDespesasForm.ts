@@ -106,10 +106,10 @@ export function useRendasDespesasForm({ isLastStep = false, onAdvance }: Options
     event.preventDefault();
     setSubmitAttempted(true);
 
-    if (!validateFormData(formData, setErrors)) {
-      toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-      return;
-    }
+    // if (!validateFormData(formData, setErrors)) {
+    //   toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+    //   return;
+    // }
 
     setLoading(true);
 
