@@ -8,6 +8,7 @@ import { EnderecoMoradia } from "../components/forms/EnderecoMoradia"
 import { DadosAcademicos } from "../components/forms/DadosAcademicos"
 import { ComposicaoFamiliar } from "../components/forms/ComposicaoFamiliar"
 import { RendasDespesas } from "../components/forms/RendasDespesas"
+import { SituacoesImpacto } from "../components/forms/SituacoesImpacto"
 import { RelatoPessoal } from "../components/forms/RelatoPessoal"
 import { Footer } from "../components/Footer"
 import { FormSidebar } from "../components/FormSidebar"
@@ -42,7 +43,12 @@ export function Formulario() {
       component: <RendasDespesas onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
       formId: "rendas-despesas-form"
     },
-    //situações de impacto aqui
+    {
+      title: "Situações que podem impactar a sua vida",
+      component: <SituacoesImpacto onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
+      formId: "situacoes-impacto-form"
+    },
+  
     {
       title: "Relato Pessoal",
       component: <RelatoPessoal onAdvance={nextStep} isLastStep={isLastStep} onSidebarActionsChange={setSidebarActions} />,
