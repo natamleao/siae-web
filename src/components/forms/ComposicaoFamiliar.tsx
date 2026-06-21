@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
-import { useComposicaoFamiliarForm } from "../../hooks/useComposicaoFamiliarForm";
+import { useComposicaoFamiliarForm } from "../../hooks/forms/useComposicaoFamiliarForm";
 
 interface ComposicaoFamiliarProps {
   onValidityChange?: (isValid: boolean) => void;

@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 type FormData = {
-  relatoPessoal: string;
+  rendaTotalFamiliar: string;
+  rendaPerCapita: string;
+  moradia: string;
+  transporte: string;
+  alimentacao: string;
+  saude: string;
+  educacao: string;
+  outrasDespesas: string;
 };
 
 interface Options {
@@ -12,32 +19,57 @@ interface Options {
 }
 
 const initialFormData: FormData = {
-  relatoPessoal: "",
+  rendaTotalFamiliar: "",
+  rendaPerCapita: "",
+  moradia: "",
+  transporte: "",
+  alimentacao: "",
+  saude: "",
+  educacao: "",
+  outrasDespesas: "",
+};
+
+const requiredMessages: Partial<Record<keyof FormData, string>> = {
+  moradia: "Campo obrigatório não preenchido.",
+  transporte: "Campo obrigatório não preenchido.",
+  alimentacao: "Campo obrigatório não preenchido.",
+  saude: "Campo obrigatório não preenchido.",
+  educacao: "Campo obrigatório não preenchido.",
+  outrasDespesas: "Campo obrigatório não preenchido.",
 };
 
 function validateFormData(formData: FormData, setErrors: (errors: Record<string, string>) => void) {
   const newErrors: Record<string, string> = {};
 
-  if (!formData.relatoPessoal.trim()) {
-    newErrors.relatoPessoal = "Descreva sua situação antes de prosseguir.";
-  }
+  (Object.keys(requiredMessages) as Array<keyof FormData>).forEach((key) => {
+    if (!formData[key].trim()) {
+      newErrors[key] = requiredMessages[key] ?? "Campo obrigatório não preenchido.";
+    }
+  });
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 }
 
 function computeStepValidity(formData: FormData) {
-  return Boolean(formData.relatoPessoal.trim());
+  return Boolean(
+    formData.moradia.trim() &&
+    formData.transporte.trim() &&
+    formData.alimentacao.trim() &&
+    formData.saude.trim() &&
+    formData.educacao.trim() &&
+    formData.outrasDespesas.trim()
+  );
 }
 
-export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options = {}) {
+export function useRendasDespesasForm({ isLastStep = false, onAdvance }: Options = {}) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
 
     setFormData((prev) => ({
@@ -55,7 +87,7 @@ export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options 
 
   const handleSaveDraft = useCallback(() => {
     try {
-      localStorage.setItem("relatoPessoalDraft", JSON.stringify(formData));
+      localStorage.setItem("rendasDespesasDraft", JSON.stringify(formData));
       toast.success("Rascunho salvo");
     } catch {
       toast.error("Erro ao salvar rascunho");
@@ -64,7 +96,7 @@ export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options 
 
   const handleCancel = useCallback(() => {
     if (confirm("Tem certeza que deseja cancelar o preenchimento?")) {
-      localStorage.removeItem("relatoPessoalDraft");
+      localStorage.removeItem("rendasDespesasDraft");
       setFormData(initialFormData);
       toast.info("Preenchimento cancelado");
     }
@@ -74,16 +106,16 @@ export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options 
     event.preventDefault();
     setSubmitAttempted(true);
 
-    // if (!validateFormData(formData, setErrors)) {
-    //   toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-    //   return;
-    // }
+    if (!validateFormData(formData, setErrors)) {
+      toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+      return;
+    }
 
     setLoading(true);
 
     try {
-      // console.log("Relato pessoal:", formData);
-      toast.success("Relato pessoal salvo com sucesso!");
+      // console.log("Rendas e despesas:", formData);
+      toast.success("Informações salvas com sucesso");
       if (isLastStep) {
         setTimeout(() => navigate("/dashboard"), 2000);
         return;
@@ -94,16 +126,16 @@ export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options 
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error("Erro ao processar o relato pessoal");
+        toast.error("Não foi possível salvar os dados. Verifique os campos destacados");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const isStepValid = computeStepValidity(formData);
   const hasErrors = Object.values(errors).some(Boolean);
   const isDisabled = loading || hasErrors;
+  const isStepValid = computeStepValidity(formData);
 
   return {
     formData,
@@ -113,7 +145,7 @@ export function useRelatoPessoalForm({ isLastStep = false, onAdvance }: Options 
     handleSaveDraft,
     handleCancel,
     handleSubmit,
-    isStepValid,
     isDisabled,
+    isStepValid,
   };
 }

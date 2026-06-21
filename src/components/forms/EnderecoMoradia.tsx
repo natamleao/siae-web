@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
-import { useEnderecoMoradiaForm } from "../../hooks/useEnderecoMoradiaForm";
+import { useEnderecoMoradiaForm } from "../../hooks/forms/useEnderecoMoradiaForm";
 
 interface Props {
   onValidityChange?: (isValid: boolean) => void;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { InputField } from "../Input";
-import { useRendasDespesasForm } from "../../hooks/useRendasDespesasForm";
+import { useRendasDespesasForm } from "../../hooks/forms/useRendasDespesasForm";
 
 interface Props {
 	onValidityChange?: (isValid: boolean) => void;

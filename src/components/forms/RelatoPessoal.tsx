@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { useRelatoPessoalForm } from "../../hooks/useRelatoPessoalForm";
+import { useRelatoPessoalForm } from "../../hooks/forms/useRelatoPessoalForm";
 
 interface Props {
   onValidityChange?: (isValid: boolean) => void;

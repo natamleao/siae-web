@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Stepper } from "../components/StepperForm"
-import { FormStepHook } from "../hooks/formSteps"
+import { FormStepHook } from "../hooks/forms/formSteps"
 import { Header } from "../components/Header"
 import ButtonForms from "../components/ButtonsForm"
 import { IdentificacaoPessoal } from "../components/forms/IdentificacaoPessoal"

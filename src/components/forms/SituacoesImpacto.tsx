@@ -2,7 +2,7 @@ import { useEffect, type ChangeEvent } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
-import { useSituacoesForm } from "../../hooks/useSituacoesForm";
+import { useSituacoesForm } from "../../hooks/forms/useSituacoesForm";
 import { FaCheck } from "react-icons/fa6";
 
 interface SituacoesImpactoProps {

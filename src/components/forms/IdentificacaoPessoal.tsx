@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
-import { useIdentificacaoPessoalForm } from "../../hooks/useIdentificacaoPessoalForm";
+import { useIdentificacaoPessoalForm } from "../../hooks/forms/useIdentificacaoPessoalForm";
 
 interface IdentificacaoPessoalProps {
   onValidityChange?: (isValid: boolean) => void;

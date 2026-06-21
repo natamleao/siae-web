@@ -1,8 +1,8 @@
 import { useCallback, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { PersonalData } from "../types/forms/personal";
-import { formatCPF, validateCPF, formatDate, validateDate, formatPhone, validatePhone, validateRG, validateForm } from "../utils/validateForm";
+import type { PersonalData } from "../../types/forms/personal";
+import { formatCPF, validateCPF, formatDate, validateDate, formatPhone, validatePhone, validateRG, validateForm } from "../../utils/validateForm";
 
 type FormData = PersonalData;
 
@@ -124,10 +124,10 @@ export function useIdentificacaoPessoalForm({ isLastStep = false, onAdvance }: U
                 event.preventDefault();
                 setSubmitAttempted(true);
 
-                // if (!validateForm(formData, setErrors)) {
-                //         toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
-                //         return;
-                // }
+                if (!validateForm(formData, setErrors)) {
+                        toast.error("Não foi possível salvar os dados. Verifique os campos destacados.");
+                        return;
+                }
 
                 setLoading(true);
 

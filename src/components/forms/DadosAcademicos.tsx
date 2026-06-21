@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import { InputField } from "../Input";
 import { SelectField } from "../SelectField";
-import { useDadosAcademicosForm } from "../../hooks/useDadosAcademicosForm";
+import { useDadosAcademicosForm } from "../../hooks/forms/useDadosAcademicosForm";
 
 interface DadosAcademicosProps {
   onValidityChange?: (isValid: boolean) => void;
