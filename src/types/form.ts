@@ -1,0 +1,1 @@
+export type { PersonalData } from "./forms/personal"

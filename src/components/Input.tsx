@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 interface InputProps {
     id: string;
     label: string;
-    type: 'text' | 'number' | 'password' | 'email';
+    labelClassName?: string;
+    type: 'text' | 'number' | 'password' | 'email' | 'date';
     value: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
@@ -14,12 +15,14 @@ interface InputProps {
     minLength?: number;
     maxLength?: number;
     pattern?: string;
-    validatePassword?: boolean;
+    forceShowError?: boolean;
+    valid?: boolean;
 }
 
 export const InputField: React.FC<InputProps> = ({
     id,
     label,
+    labelClassName,
     type,
     value,
     onChange,
@@ -31,7 +34,8 @@ export const InputField: React.FC<InputProps> = ({
     minLength,
     maxLength,
     pattern,
-    validatePassword = false,
+    forceShowError = false,
+    valid = false,
 }) => {
     const [touched, setTouched] = useState(false);
 
@@ -39,11 +43,11 @@ export const InputField: React.FC<InputProps> = ({
         setTouched(true);
     };
 
-    const showError = touched && error;
+    const showError = Boolean(error) && (touched || forceShowError);
 
     return (
-        <div className="flex flex-col space-y-0.5 w-full">
-            <label htmlFor={id} className="text-sm font-medium text-gray-700">
+        <div className="flex flex-col space-y-2 w-full [&_label]:!text-[16px] [&_label]:!font-semibold [&_label]:!text-black">
+            <label htmlFor={id} className={`text-sm font-medium text-gray-700 ${labelClassName ?? ''}`}>
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}
             </label>
@@ -52,6 +56,8 @@ export const InputField: React.FC<InputProps> = ({
                 className={`border rounded-md px-3 py-1 text-gray-900 focus:outline-none focus:ring-2 transition-colors duration-200 ${
                     showError
                         ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                        : valid
+                        ? 'border-green-500 focus:ring-green-500 focus:border-green-500'
                         : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                 }`}
                 type={type}
@@ -64,17 +70,17 @@ export const InputField: React.FC<InputProps> = ({
                 minLength={minLength}
                 maxLength={maxLength}
                 pattern={pattern}
-                aria-invalid={showError}
-                aria-describedby={showError ? `${id}-error` : hint ? `${id}-hint` : undefined}
+                aria-invalid={showError ? 'true' : 'false'}
+                aria-describedby={hint ? `${id}-hint${showError ? ` ${id}-error` : ''}` : showError ? `${id}-error` : undefined}
             />
+            {hint && (
+                <p id={`${id}-hint`} className="text-xs text-gray-500 mt-1">
+                    {hint}
+                </p>
+            )}
             {showError && (
                 <p id={`${id}-error`} className="text-xs text-red-500 mt-1">
                     {error}
-                </p>
-            )}
-            {!showError && hint && (
-                <p id={`${id}-hint`} className="text-xs text-gray-500 mt-1">
-                    {hint}
                 </p>
             )}
         </div>
