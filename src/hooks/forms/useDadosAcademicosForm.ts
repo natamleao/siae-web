@@ -72,10 +72,10 @@ export function useDadosAcademicosForm({ isLastStep = false, onAdvance }: UseDad
       e.preventDefault();
       setSubmitAttempted(true);
 
-      // if (!isStepValid) {
-      //   toast.error("Por favor, preencha todos os campos obrigatórios!");
-      //   return;
-      // }
+      if (!isStepValid) {
+        toast.error("Por favor, preencha todos os campos obrigatórios!");
+        return;
+      }
 
       // Save data to localStorage or API
       localStorage.setItem("dadosAcademicos", JSON.stringify(formData));

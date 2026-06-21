@@ -59,84 +59,68 @@ export function ComposicaoFamiliar({
                   </div>
 
                   {/* Nome Completo */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-2">
-                      Nome completo
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ex? Maria Eduarda Alves Souza"
-                      value={membro.nomeCompleto}
-                      onChange={(e) => updateMembro(membro.id, 'nomeCompleto', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                  <InputField
+                    id={`nomeCompleto-${membro.id}`}
+                    label="Nome completo"
+                    type="text"
+                    placeholder="Ex? Maria Eduarda Alves Souza"
+                    value={membro.nomeCompleto}
+                    onChange={(e) => updateMembro(membro.id, 'nomeCompleto', e.target.value)}
+                  />
 
                   {/* Data de Nascimento */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-2">
-                      Data de nascimento
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="DD/MM/AAAA"
-                      maxLength={10}
-                      value={membro.dataNascimento}
-                      onChange={(e) => updateMembro(membro.id, 'dataNascimento', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                  <InputField
+                    id={`dataNascimento-${membro.id}`}
+                    label="Data de nascimento"
+                    type="text"
+                    placeholder="DD/MM/AAAA"
+                    maxLength={10}
+                    value={membro.dataNascimento}
+                    onChange={(e) => updateMembro(membro.id, 'dataNascimento', e.target.value)}
+                  />
 
                   {/* Situação Ocupacional */}
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-2">
-                      Situação ocupacional
-                    </label>
-                    <select
-                      value={membro.situacaoOcupacional}
-                      onChange={(e) => updateMembro(membro.id, 'situacaoOcupacional', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Selecionar uma opção</option>
-                      <option value="empregado">Empregado(a)</option>
-                      <option value="desempregado">Desempregado(a)</option>
-                      <option value="autonomo">Autônomo(a)</option>
-                      <option value="aposentado">Aposentado(a)</option>
-                      <option value="estudante">Estudante</option>
-                      <option value="do lar">Do Lar</option>
-                      <option value="informal">Informal</option>
-                    </select>
-                  </div>
+                  <SelectField
+                    id={`situacaoOcupacional-${membro.id}`}
+                    label="Situação ocupacional"
+                    value={membro.situacaoOcupacional}
+                    onChange={(e) => updateMembro(membro.id, 'situacaoOcupacional', e.target.value)}
+                    options={[
+                      { value: "", label: "Selecionar uma opção" },
+                      { value: "proprietario", label: "Proprietário(a) ou sócio(a) de empresa" },
+                      { value: "mei", label: "Microempreendedores individuais(MEI) ou Profissionais liberais" },
+                      { value: "assalariado", label: "Trabalhador(a) assalariado(a)" },
+                      { value: "aposentado", label: "Trabalhador(a) Aposentado(a) ou Pensionista ou Beneficiários(as) do Benefício de Prestação Continuada (BPC) ou de outros benefícios previdenciários" },
+                      { value: "informal", label: "Trabalhador(a) Informal ou Autônomo(a)" },
+                      { value: "pensao", label: "Pessoa que recebe pensão alimentícia/ajuda financeira (renda por terceiros) ou possui rendimento de aluguéis" },
+                      { value: "rural", label: "Trabalhador(a) em atividade rural" },
+                      { value: "bolsista", label: "Bolsista ou Estagiário(a)" },
+                      { value: "desempregado", label: "Trabalhador(a) desempregado(a)/Recebendo Seguro Desemprego" },
+                    ]}
+                  />
 
                   {/* Renda Individual e Contribui para Renda Familiar */}
                   <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-2">
-                        Renda individual mensal (R$)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Ex. 1200.00"
-                        value={membro.rendaMensal}
-                        onChange={(e) => updateMembro(membro.id, 'rendaMensal', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
+                    <InputField
+                      id={`rendaMensal-${membro.id}`}
+                      label="Renda individual mensal (R$)"
+                      type="text"
+                      placeholder="Ex. 1200.00"
+                      value={membro.rendaMensal}
+                      onChange={(e) => updateMembro(membro.id, 'rendaMensal', e.target.value)}
+                    />
 
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-2">
-                        Contribui para a renda familiar?
-                      </label>
-                      <select
-                        value={membro.contribuiRenda}
-                        onChange={(e) => updateMembro(membro.id, 'contribuiRenda', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">Selecionar uma opção</option>
-                        <option value="sim">Sim</option>
-                        <option value="nao">Não</option>
-                      </select>
-                    </div>
+                    <SelectField
+                      id={`contribuiRenda-${membro.id}`}
+                      label="Contribui para a renda familiar?"
+                      value={membro.contribuiRenda}
+                      onChange={(e) => updateMembro(membro.id, 'contribuiRenda', e.target.value)}
+                      options={[
+                        { value: "", label: "Selecionar uma opção" },
+                        { value: "sim", label: "Sim" },
+                        { value: "nao", label: "Não" },
+                      ]}
+                    />
                   </div>
 
                   {/* Botão Remover */}
@@ -144,7 +128,12 @@ export function ComposicaoFamiliar({
                     <button
                       type="button"
                       onClick={() => removeMembro(membro.id)}
-                      className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition-colors font-semibold text-sm"
+                      disabled={formData.membros.length === 1}
+                      className={`px-4 py-2 text-white rounded-md transition-colors font-semibold text-sm ${
+                        formData.membros.length > 1
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-gray-400 cursor-not-allowed"
+                      }`}
                     >
                       Remover
                     </button>

@@ -31,10 +31,6 @@ function computeStepValidity(formData: ComposicaoFamiliarData) {
   );
 }
 
-const initialFormData: ComposicaoFamiliarData = {
-  membros: [],
-};
-
 const initialFamilyMember: FamilyMember = {
   id: "",
   nomeCompleto: "",
@@ -42,6 +38,10 @@ const initialFamilyMember: FamilyMember = {
   situacaoOcupacional: "",
   rendaMensal: "",
   contribuiRenda: "",
+};
+
+const initialFormData: ComposicaoFamiliarData = {
+  membros: [{ ...initialFamilyMember, id: "1" }],
 };
 
 export function useComposicaoFamiliarForm({ isLastStep = false, onAdvance }: UseComposicaoFamiliarFormOptions) {
