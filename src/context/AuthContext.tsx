@@ -1,11 +1,13 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useMemo, use } from 'react';
 import { authService } from '../services/authService';
+import type { User } from '../types/auth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User | null
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,6 +16,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return authService.isAuthenticated();
   });
+
+  const [user, setUser] = useState<User | null >(() => {
+    return authService.getUser();
+  })
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -23,7 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      await authService.login(email, password);
+      const response = await authService.login(email, password);
+      setUser(response.user);
       setIsAuthenticated(true);
     } catch (error) {
       setIsAuthenticated(false);
@@ -31,17 +39,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    authService.logout();
+  const logout = useCallback(async () => {
+    await authService.logout();
+    setUser(null);
     setIsAuthenticated(false);
   }, []);
 
   const value = useMemo(() => ({
     isAuthenticated,
+    user,
     loading,
     login,
     logout,
-  }), [isAuthenticated, loading, login, logout]);
+  }), [isAuthenticated, user, loading, login, logout]);
 
   return (
     <AuthContext.Provider value={value}>

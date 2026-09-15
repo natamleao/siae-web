@@ -1,3 +1,4 @@
+import { useReducer } from 'react';
 import { apiRequest, getApiUrl } from '../config/api';
 import { API_ENDPOINTS, AUTH, ERROR_MESSAGES } from '../config/constants';
 import type { LoginResponse, RegisterResponse, ForgotPasswordResponse } from '../types/auth';
@@ -21,6 +22,10 @@ class AuthService {
         this.setToken(response.token);
       } else {
         this.setToken('authenticated');
+      }
+
+      if (response.user) {
+        this.setUser(response.user)
       }
 
       return response;
@@ -90,14 +95,38 @@ class AuthService {
     }
   }
 
-  logout(): void {
-    this.clearToken();
-    this.clearFailCount();
-    this.clearLockout();
+  async logout(): Promise<void> {
+    try {
+      await apiRequest(
+        getApiUrl(API_ENDPOINTS.LOGOUT),
+        {
+          method: 'POST',
+        }
+      );
+    } finally {
+      this.clearToken();
+      this.clearUser();
+      this.clearFailCount();
+      this.clearLockout();
+    }
   }
 
   getToken(): string | null {
     return localStorage.getItem(AUTH.TOKEN_KEY);
+  }
+
+  private setUser(user: LoginResponse['user']): void {
+    localStorage.setItem(AUTH.USER_KEY, JSON.stringify(user))
+  }
+
+  getUser(): LoginResponse['user'] | null {
+    const user = localStorage.getItem(AUTH.USER_KEY)
+
+    if (!user) {
+      return null
+    }
+
+    return JSON.parse(user)
   }
 
   private setToken(token: string): void {
@@ -107,6 +136,10 @@ class AuthService {
 
   private clearToken(): void {
     localStorage.removeItem(AUTH.TOKEN_KEY);
+  }
+
+  private clearUser(): void {
+    localStorage.removeItem(AUTH.USER_KEY);
   }
 
   isAuthenticated(): boolean {
