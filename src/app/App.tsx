@@ -3,6 +3,8 @@ import { Login } from "./Login";
 import { SignUp } from "./SignUp";
 import { RecuperarSenha } from "./RecuperarSenha";
 import { Dashboard } from "./Dashboard";
+import {PainelAdministrativo} from "./PainelAdministrativo";
+import { DetailSolicitacao } from "./DetailSolicitacao";
 import { Formulario } from "./formulario";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { PublicRoute } from "../components/PublicRoute";
@@ -18,6 +20,11 @@ export default function App() {
                     <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
                     {/* Passar pra rota privada depois q terminar */}
                     <Route path="/formulario" element={<PublicRoute><Formulario /></PublicRoute>} />
+                    <Route
+                    path="/detalhe-solicitacao/:auxilioId"
+                    element={<DetailSolicitacao />}
+                    />
+                    <Route path="/painel-administrativo" element={<PainelAdministrativo />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/dashboard" element={<Dashboard />} />
