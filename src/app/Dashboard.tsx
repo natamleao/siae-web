@@ -74,9 +74,23 @@ export function Dashboard() {
                         </p>
                     </div>
 
-
+                    {loading ? (
+                        <CardsSkeleton />
+                    ) : (
+                        <div className="flex flex-col gap-4 md:flex-row md:gap-[13px] md:flex-wrap">
+                            {AUXILIOS_MOCK.map((auxilio) => (
+                                <CardAuxilio key={auxilio.id} auxilio={auxilio} icon={AUXILIO_ICONS[auxilio.id]} />
+                            ))}
                         </div>
                     )}
+
+                    {user && (
+                        <div className="bg-white p-4 rounded-lg border border-gray-200 text-left">
+                            <p className="text-xs text-gray-400 uppercase font-bold mb-1">Usuário Autenticado</p>
+                            <p className="text-gray-700 font-medium truncate">{user.email}</p>
+                        </div>
+                    )}
+
                 </div>
 
                 <div className="w-full max-w-[1080px] flex flex-col items-end gap-6">
