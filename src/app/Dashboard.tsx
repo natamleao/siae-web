@@ -7,7 +7,7 @@ import { Footer } from '../components/Footer';
 import { AvisosCarrossel } from '../components/AvisosCarrossel';
 import { CardAuxilio } from '../components/CardAuxilio';
 import { SolicitacaoItem } from '../components/SolicitacaoItem';
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/useAuthContext';
 import { AUXILIOS_MOCK, SOLICITACOES_MOCK } from '../config/auxilios';
 
 const AUXILIO_ICONS: Record<string, typeof FaBaby> = {
