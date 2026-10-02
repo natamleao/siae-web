@@ -6,7 +6,10 @@ export const AUTH = {
   FAIL_COUNT_KEY: 'siae_fail_count',
   LOCKOUT_END_KEY: 'siae_lockout_end',
   MIN_PASSWORD_LENGTH: 8,
-  PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*\d).{8,}$/,
+  MAX_PASSWORD_LENGTH: 16,
+  PASSWORD_REGEX: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*\-_]).{8,16}$/,
+  MATRICULA_REGEX: /^\d{6}$/,
+  INSTITUTIONAL_EMAIL_REGEX: /^[^\s@]+@alu\.ufc\.br$/i,
 } as const;
 
 export const API_ENDPOINTS = {
@@ -18,7 +21,8 @@ export const API_ENDPOINTS = {
 export const ERROR_MESSAGES = {
   INVALID_CREDENTIALS: 'Email ou senha inválidos',
   PASSWORD_MISMATCH: 'As senhas não coincidem',
-  INVALID_PASSWORD_STRENGTH: 'Senha deve ter 8+ caracteres, letra maiúscula e número',
+  INVALID_PASSWORD_STRENGTH:
+    'Senha deve ter de 8 a 16 caracteres, com letra maiúscula, minúscula, número e caractere especial',
   USER_NOT_FOUND: 'Usuário não encontrado',
   SERVER_ERROR: 'Erro ao conectar com o servidor',
   ACCOUNT_LOCKED: 'Muitas tentativas falhas. Bloqueado por 15 minutos',

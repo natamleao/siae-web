@@ -18,8 +18,11 @@ export function SignUp() {
     const navigate = useNavigate();
 
     const validateEmail = (email: string): boolean => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return AUTH.INSTITUTIONAL_EMAIL_REGEX.test(email);
+    };
+
+    const validateMatricula = (matricula: string): boolean => {
+        return AUTH.MATRICULA_REGEX.test(matricula);
     };
 
     const validateForm = (): boolean => {
@@ -27,8 +30,8 @@ export function SignUp() {
 
         if (!matricula) {
             newErrors.matricula = 'Matrícula é obrigatória';
-        } else if (!/^\d+$/.test(matricula)) {
-            newErrors.matricula = 'Matrícula deve conter apenas números';
+        } else if (!validateMatricula(matricula)) {
+            newErrors.matricula = 'Matrícula deve conter 6 dígitos';
         }
 
         if (!nomeCompleto) {
@@ -38,11 +41,13 @@ export function SignUp() {
         if (!email) {
             newErrors.email = 'Email é obrigatório';
         } else if (!validateEmail(email)) {
-            newErrors.email = 'Email inválido';
+            newErrors.email = 'Informe um e-mail institucional @alu.ufc.br';
         }
 
         if (!senha) {
             newErrors.senha = 'Senha é obrigatória';
+        } else if (senha.length < AUTH.MIN_PASSWORD_LENGTH) {
+            newErrors.senha = 'Senha deve ter no mínimo 8 caracteres';
         } else if (!authService.validatePasswordStrength(senha)) {
             newErrors.senha = ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH;
         }
@@ -96,18 +101,11 @@ export function SignUp() {
                         onSubmit={handleSubmit}
                         className="flex flex-col w-full items-center"
                     >
-                        <h2 className="font-bold text-2xl mb-6">Crie sua conta</h2>
+                        <div className="flex flex-col w-[500px] max-md:w-3/4 items-center gap-[25px]">
+                            <h2 className="font-semibold text-[36px] text-center w-full">Crie sua conta</h2>
 
-                        {/* <div className="w-2/4 max-md:w-3/4 mb-6">
-                            <div className="bg-gray-200 rounded p-1">
-                                <div className="bg-blue-600 text-white text-sm font-medium text-center py-2 rounded">
-                                    Estudante
-                                </div>
-                            </div>
-                        </div> */}
-
-                        <div className="flex flex-col w-full items-center space-y-4">
-                            <div className="w-1/3 max-md:w-3/4">
+                            <div className="flex flex-col w-full items-start space-y-4">
+                            <div className="w-full">
                                 <InputField
                                     id="nomeCompleto"
                                     label="Nome Completo"
@@ -121,29 +119,35 @@ export function SignUp() {
                                         }
                                     }}
                                     error={errors.nomeCompleto}
+                                    size="lg"
                                     required
                                 />
                             </div>
 
-                            <div className="w-1/3 max-md:w-3/4">
+                            <div className="w-full">
                                 <InputField
                                     id="matricula"
                                     label="Matrícula"
-                                    type="number"
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={6}
                                     placeholder="Sua matrícula no SIGAA"
                                     value={matricula}
                                     onChange={(e) => {
-                                        setMatricula(e.target.value);
+                                        const onlyDigits = e.target.value.replace(/\D/g, '');
+                                        setMatricula(onlyDigits);
                                         if (errors.matricula) {
                                             setErrors({ ...errors, matricula: '' });
                                         }
                                     }}
                                     error={errors.matricula}
+                                    valid={validateMatricula(matricula)}
+                                    size="lg"
                                     required
                                 />
                             </div>
 
-                            <div className="w-1/3 max-md:w-3/4">
+                            <div className="w-full">
                                 <InputField
                                     id="email"
                                     label="E-mail institucional"
@@ -156,12 +160,14 @@ export function SignUp() {
                                         }
                                     }}
                                     error={errors.email}
+                                    valid={validateEmail(email)}
                                     placeholder="seuemail@alu.ufc.br"
+                                    size="lg"
                                     required
                                 />
                             </div>
 
-                            <div className="w-1/3 max-md:w-3/4">
+                            <div className="w-full">
                                 <InputField
                                     id="password"
                                     label="Senha"
@@ -174,13 +180,17 @@ export function SignUp() {
                                         }
                                     }}
                                     error={errors.senha}
-                                    hint="Mínimo 8 caracteres, uma letra maiúscula e um número"
+                                    valid={authService.validatePasswordStrength(senha)}
+                                    tooltip="A senha deve conter: entre 8 e 16 caracteres, letra minúscula, letra maiúscula, número e caractere especial (!, @, #, $, %, &, *, -, _)"
                                     required
                                     placeholder="Digite sua senha"
+                                    maxLength={AUTH.MAX_PASSWORD_LENGTH}
+                                    size="lg"
+                                    showPasswordToggle
                                 />
                             </div>
 
-                            <div className="w-1/3 max-md:w-3/4">
+                            <div className="w-full">
                                 <InputField
                                     id="confirmPassword"
                                     label="Confirme sua senha"
@@ -193,19 +203,22 @@ export function SignUp() {
                                         }
                                     }}
                                     error={errors.confirmacaoSenha}
+                                    valid={Boolean(confirmacaoSenha) && confirmacaoSenha === senha}
+                                    maxLength={AUTH.MAX_PASSWORD_LENGTH}
+                                    size="lg"
+                                    showPasswordToggle
                                     required
                                 />
                             </div>
-                        </div>
+                            </div>
 
-                        <div className="w-1/3 max-md:w-3/4 flex justify-center mt-8">
                             <button
                                 type="submit"
                                 disabled={isDisabled}
-                                className={`w-1/2 mx-auto rounded-md p-2 font-semibold transition-all duration-300 ${
-                                    isDisabled 
-                                    ? 'bg-gray-400 cursor-not-allowed text-black' 
-                                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                                className={`w-[220px] rounded-[8px] px-[20px] py-[12px] text-[20px] font-semibold transition-all duration-300 ${
+                                    isDisabled
+                                    ? 'bg-gray-400 cursor-not-allowed text-black'
+                                    : 'bg-[#1058cc] text-white hover:bg-blue-700'
                                 }`}
                             >
                                 {loading ? "Cadastrando..." : "Cadastrar"}
