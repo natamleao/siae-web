@@ -37,7 +37,7 @@ function CardsSkeleton() {
 export function Dashboard() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const { logout } = useAuthContext();
+    const { user, logout } = useAuthContext();
 
     useEffect(() => {
         const getUserData = async () => {
@@ -73,13 +73,8 @@ export function Dashboard() {
                             Veja quais auxílios a Assistência Estudantil oferece, e se eles estão disponíveis para solicitação.
                         </p>
                     </div>
-                    {loading ? (
-                        <CardsSkeleton />
-                    ) : (
-                        <div className="flex flex-col gap-4 md:flex-row md:gap-[13px] md:flex-wrap">
-                            {AUXILIOS_MOCK.map((auxilio) => (
-                                <CardAuxilio key={auxilio.id} auxilio={auxilio} icon={AUXILIO_ICONS[auxilio.id]} />
-                            ))}
+
+
                         </div>
                     )}
                 </div>
