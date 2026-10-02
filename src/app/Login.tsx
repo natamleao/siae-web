@@ -5,8 +5,8 @@ import React from 'react';
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { ToastContainer, toast } from 'react-toastify';
-import { ERROR_MESSAGES, TIMINGS } from "../config/constants";
-import { useAuthContext } from "../context/AuthContext";
+import { ERROR_MESSAGES } from "../config/constants";
+import { useAuthContext } from "../context/useAuthContext";
 
 
 export function Login() {
@@ -15,7 +15,7 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const [identifierError, setIdentifierError] = useState<string>('');
     const navigate = useNavigate();
-    const { isAuthenticated, login } = useAuthContext();
+    const { login } = useAuthContext();
 
     const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

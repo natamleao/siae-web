@@ -1,4 +1,3 @@
-import { useReducer } from 'react';
 import { apiRequest, getApiUrl } from '../config/api';
 import { API_ENDPOINTS, AUTH, ERROR_MESSAGES } from '../config/constants';
 import type { LoginResponse, RegisterResponse, ForgotPasswordResponse } from '../types/auth';
@@ -48,28 +47,24 @@ class AuthService {
       throw new Error(ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH);
     }
 
-    try {
-      const response = await apiRequest<RegisterResponse>(
-        getApiUrl(API_ENDPOINTS.REGISTER),
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            email,
-            password,
-            matricula: Number(matricula),
-            permissao: 0,
-          }),
-        }
-      );
-
-      if (response.token) {
-        this.setToken(response.token);
+    const response = await apiRequest<RegisterResponse>(
+      getApiUrl(API_ENDPOINTS.REGISTER),
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+          matricula: Number(matricula),
+          permissao: 0,
+        }),
       }
+    );
 
-      return response;
-    } catch (error) {
-      throw error;
+    if (response.token) {
+      this.setToken(response.token);
     }
+
+    return response;
   }
 
   async forgotPassword(identifier: string): Promise<ForgotPasswordResponse> {

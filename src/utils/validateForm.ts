@@ -1,3 +1,5 @@
+import type { PersonalData } from "../types/forms/personal";
+
 export function validateCPF(cpf: string): boolean {
   const cleanCPF = cpf.replace(/\D/g, "");
   return cleanCPF.length === 11 && /^\d{11}$/.test(cleanCPF);
@@ -77,7 +79,7 @@ export function validatePhone(phone: string): boolean {
 }
 
 
-export function validateForm(formData: any, setErrors: (errors: Record<string, string>) => void): boolean {
+export function validateForm(formData: PersonalData, setErrors: (errors: Record<string, string>) => void): boolean {
   const newErrors: Record<string, string> = {};
   const requiredMessage = "Campo obrigatório não preenchido.";
 

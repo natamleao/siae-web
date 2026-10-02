@@ -1,9 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaBaby, FaUserPlus, FaUtensils } from 'react-icons/fa6';
+import { TbUrgent } from 'react-icons/tb';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
-import { useAuthContext } from '../context/AuthContext';
-import type { User } from '../types/auth';
+import { AvisosCarrossel } from '../components/AvisosCarrossel';
+import { CardAuxilio } from '../components/CardAuxilio';
+import { SolicitacaoItem } from '../components/SolicitacaoItem';
+import { useAuthContext } from '../context/useAuthContext';
+import { AUXILIOS_MOCK, SOLICITACOES_MOCK } from '../config/auxilios';
+
+const AUXILIO_ICONS: Record<string, typeof FaBaby> = {
+    creche: FaBaby,
+    'isencao-ru': FaUtensils,
+    ingressante: FaUserPlus,
+    emergencial: TbUrgent,
+};
+
+const SOLICITACAO_ICONS: Record<string, typeof FaBaby> = {
+    'Auxílio Emergencial': TbUrgent,
+    'Isenção Parcial do RU': FaUtensils,
+    'Auxílio Ingressante': FaUserPlus,
+    'Auxílio Creche': FaBaby,
+};
+
+function CardsSkeleton() {
+    return (
+        <div className="flex flex-col gap-4 md:flex-row md:gap-[13px] md:flex-wrap">
+            {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-gray-100 animate-pulse rounded-[8px] w-full md:w-[260px] h-[220px] md:h-[289px]" />
+            ))}
+        </div>
+    );
+}
 
 export function Dashboard() {
     const navigate = useNavigate();
@@ -13,7 +42,6 @@ export function Dashboard() {
     useEffect(() => {
         const getUserData = async () => {
             try {
-                
                 setLoading(false);
             } catch (error) {
                 console.error('Erro ao carregar dados do usuário:', error);
@@ -25,46 +53,71 @@ export function Dashboard() {
         getUserData();
     }, [logout, navigate]);
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
-
     return (
         <main className="flex flex-col min-h-screen">
             <Header />
 
-            <section className="bg-white flex-grow flex flex-col items-center justify-center p-8">
-                <div className="max-w-md w-full border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center bg-gray-50">
-                    <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
+            <section className="bg-white grow flex flex-col items-center py-8 gap-10 px-[132px] max-md:px-6">
+                <div className="w-full max-w-[1080px]">
+                    {loading ? (
+                        <div className="w-full h-[350px] rounded-[8px] bg-gray-100 animate-pulse" />
+                    ) : (
+                        <AvisosCarrossel />
+                    )}
+                </div>
+
+                <div className="w-full max-w-[1080px] flex flex-col gap-4">
+                    <div>
+                        <h2 className="font-semibold text-[32px] text-black">Conheça os Auxílios</h2>
+                        <p className="text-black text-[15px]">
+                            Veja quais auxílios a Assistência Estudantil oferece, e se eles estão disponíveis para solicitação.
+                        </p>
                     </div>
-                    
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">Painel de Acesso</h1>
-                    <p className="text-gray-600 mb-8">Login realizado com sucesso!</p>
-                    
+
+                    {loading ? (
+                        <CardsSkeleton />
+                    ) : (
+                        <div className="flex flex-col gap-4 md:flex-row md:gap-[13px] md:flex-wrap">
+                            {AUXILIOS_MOCK.map((auxilio) => (
+                                <CardAuxilio key={auxilio.id} auxilio={auxilio} icon={AUXILIO_ICONS[auxilio.id]} />
+                            ))}
+                        </div>
+                    )}
+
                     {user && (
-                        <div className="bg-white p-4 rounded-lg border border-gray-200 mb-8 text-left">
+                        <div className="bg-white p-4 rounded-lg border border-gray-200 text-left">
                             <p className="text-xs text-gray-400 uppercase font-bold mb-1">Usuário Autenticado</p>
                             <p className="text-gray-700 font-medium truncate">{user.email}</p>
                         </div>
                     )}
 
-                    <button 
-                        onClick={handleLogout}
-                        className="w-full bg-gray-800 hover:bg-black text-white font-semibold py-3 rounded-lg transition-colors"
+                </div>
+
+                <div className="w-full max-w-[1080px] flex flex-col items-end gap-6">
+                    <div className="w-full flex flex-col gap-2">
+                        <h2 className="font-semibold text-[32px] text-black">Minhas solicitações</h2>
+                        <p className="text-black text-[15px]">Acompanhe as solicitações de auxílios que você fez.</p>
+                    </div>
+
+                    <div className="w-full flex flex-col gap-3">
+                        {loading
+                            ? Array.from({ length: 3 }).map((_, i) => (
+                                  <div key={i} className="bg-gray-100 animate-pulse rounded-[8px] w-full h-[106px]" />
+                              ))
+                            : SOLICITACOES_MOCK.map((solicitacao) => (
+                                  <SolicitacaoItem
+                                      key={solicitacao.id}
+                                      solicitacao={solicitacao}
+                                      icon={SOLICITACAO_ICONS[solicitacao.auxilioNome]}
+                                  />
+                              ))}
+                    </div>
+
+                    <button
+                        type="button"
+                        className="bg-[#1058cc] rounded-[8px] px-5 py-3 text-white font-semibold text-[16px] w-[220px]"
                     >
-                        Encerrar Sessão
+                        Nova solicitação
                     </button>
                 </div>
             </section>

@@ -1,25 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from "react"
-import type { PersonalData } from "../types/forms/personal"
-
-type GenericSection = Record<string, unknown>
-
-export interface FormData {
-  personal: Partial<PersonalData>
-  address: GenericSection
-  academic: GenericSection
-  family: GenericSection
-  income: GenericSection
-  aggravatingFactors: GenericSection
-  report: GenericSection
-}
-
-export interface FormContextType {
-  formData: FormData
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>
-  updateFormData: (section: keyof FormData, data: GenericSection) => void
-}
-
-const FormContext = createContext<FormContextType | undefined>(undefined)
+import { useState } from "react"
+import type { ReactNode } from "react"
+import {
+  FormContext,
+  type FormData,
+  type GenericSection,
+} from "./FormContextValue"
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [formData, setFormData] = useState<FormData>({
@@ -29,7 +14,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
     family: {},
     income: {},
     aggravatingFactors: {},
-    report: {}
+    report: {},
   })
 
   function updateFormData(section: keyof FormData, data: GenericSection) {
@@ -48,10 +33,3 @@ export function FormProvider({ children }: { children: ReactNode }) {
     </FormContext.Provider>
   )
 }
-
-export function useFormContext() {
-  const context = useContext(FormContext)
-  if (!context) throw new Error('useFormContext must be used within a FormProvider')
-  return context
-}
-
