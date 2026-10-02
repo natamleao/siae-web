@@ -19,7 +19,6 @@ export function ComposicaoFamiliar({
 }: ComposicaoFamiliarProps) {
   const {
     formData,
-    errors,
     submitAttempted,
     isStepValid,
     addMembro,
@@ -53,7 +52,7 @@ export function ComposicaoFamiliar({
 
             {/* Lista de Membros */}
             <div className="space-y-4">
-              {formData.membros.map((membro, index) => (
+              {formData.membros.map((membro) => (
                 <div key={membro.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-4">
                   <div className="flex justify-between items-center mb-2">
                   </div>
