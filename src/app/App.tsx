@@ -1,9 +1,29 @@
+import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { Login } from "./Login";
+import { SignUp } from "./SignUp";
+import { RecuperarSenha } from "./RecuperarSenha";
+import { Dashboard } from "./Dashboard";
+import { Formulario } from "./formulario";
+import { ProtectedRoute } from "../components/ProtectedRoute";
+import { PublicRoute } from "../components/PublicRoute";
+import { AuthProvider } from "../context/AuthContext";
+
 export default function App() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-        SIAE Web 🚀
-      </h1>
-    </main>
-  );
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
+                    <Route path="/cadastro" element={<PublicRoute><SignUp /></PublicRoute>} />
+                    <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
+                    {/* Passar pra rota privada depois q terminar */}
+                    <Route path="/formulario" element={<PublicRoute><Formulario /></PublicRoute>} />
+
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
