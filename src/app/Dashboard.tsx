@@ -7,9 +7,8 @@ import type { User } from '../types/auth';
 
 export function Dashboard() {
     const navigate = useNavigate();
-    const [userEmail, setUserEmail] = useState<string>('');
     const [loading, setLoading] = useState(true);
-    const { logout } = useAuthContext();
+    const { user, logout } = useAuthContext();
 
     useEffect(() => {
         const getUserData = async () => {
@@ -54,10 +53,10 @@ export function Dashboard() {
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Painel de Acesso</h1>
                     <p className="text-gray-600 mb-8">Login realizado com sucesso!</p>
                     
-                    {userEmail && (
+                    {user && (
                         <div className="bg-white p-4 rounded-lg border border-gray-200 mb-8 text-left">
                             <p className="text-xs text-gray-400 uppercase font-bold mb-1">Usuário Autenticado</p>
-                            <p className="text-gray-700 font-medium truncate">{userEmail}</p>
+                            <p className="text-gray-700 font-medium truncate">{user.email}</p>
                         </div>
                     )}
 
