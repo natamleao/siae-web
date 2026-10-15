@@ -182,7 +182,7 @@ export function DetailSolicitacao() {
             </p>
           </div>
 
-          <div className="mt-5 flex items-center gap-3 sm:mt-6">
+          <div className="mt-5 flex items-center  gap-3 sm:mt-6">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-blue-100 text-blue-700 sm:h-12 sm:w-12">
               <FiSmile aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
             </span>
@@ -309,7 +309,7 @@ export function DetailSolicitacao() {
                         Status
                       </p>
                       <span
-                        className={`inline-flex w-fit max-w-full rounded px-2 py-1 text-center text-[10px] font-medium leading-tight text-white sm:px-3 sm:text-xs md:whitespace-nowrap ${coresStatus[solicitacao.status]}`}
+                        className={`flex h-8 w-40 shrink-0 items-center justify-center rounded px-2 text-center text-[10px] font-medium leading-tight text-white sm:w-48 sm:px-3 sm:text-xs ${coresStatus[solicitacao.status]}`}
                       >
                         {statusInfo[solicitacao.status].label}
                       </span>

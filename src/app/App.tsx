@@ -21,7 +21,7 @@ export default function App() {
                     {/* Passar pra rota privada depois q terminar */}
                     <Route path="/formulario" element={<PublicRoute><Formulario /></PublicRoute>} />
                     <Route
-                    path="/DetailSolicitacao/:auxilioId"
+                    path="/detalhe-solicitacao/:auxilioId"
                     element={<DetailSolicitacao />}
                     />
                     <Route path="/PainelAdministrativo" element={<PainelAdministrativo />} />
