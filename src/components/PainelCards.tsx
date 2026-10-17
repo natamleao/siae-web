@@ -1,11 +1,12 @@
 import type { IconType } from "react-icons";
 import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
 
 type AidCardProps = {
   title: string;
   received: number;
   underReview: number;
-  icon: IconType;
+  icon: IconType | string;
   to: string;
 };
 
@@ -19,11 +20,20 @@ export function AidCard({
   return (
     <Link
       to={to}
-      className="flex flex-col gap-4 rounded-md border border-slate-200 bg-white p-4 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
+      className="flex flex-col gap-4 rounded-md border border-[#B5B5B5] bg-[#F9FBFF] p-6 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
     >
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-md bg-blue-100 text-blue-800">
-        <Icon aria-hidden="true" className="size-5" />
-      </span>
+      
+        {typeof Icon === "string" ? (
+          <img
+            src={Icon}
+            alt=""
+            aria-hidden="true"
+            className="size-14 object-contain"
+          />
+        ) : (
+          <Icon aria-hidden="true" className="size-5" />
+        )}
+      
 
       <h3 className="min-w-0 flex-1 font-semibold text-slate-900">
         {title}
@@ -40,7 +50,7 @@ export function AidCard({
         </div>
       </dl>
 
-      <span className="font-semibold text-blue-700">Ver solicitações</span>
+   
     </Link>
   );
 }
@@ -49,7 +59,8 @@ type MetricCardProps = {
   label: string;
   value: string;
   period: string;
-  icon: IconType;
+
+  icon: ReactNode;
   tone: "blue" | "royal" | "navy";
 };
 
@@ -63,7 +74,7 @@ export function MetricCard({
   label,
   value,
   period,
-  icon: Icon,
+  icon,
   tone,
 }: MetricCardProps) {
   return (
@@ -75,7 +86,7 @@ export function MetricCard({
           <span className="ml-3 text-sm">{period}</span>
         </p>
       </div>
-      <Icon aria-hidden="true" className="size-8 shrink-0 opacity-60" />
+      {icon}
     </article>
   );
 }
@@ -84,7 +95,7 @@ type NoticeItemProps = {
   label: string;
   message: string;
   time: string;
-  icon: IconType;
+  icon: IconType | string;
   kind: "info" | "warning";
 };
 
@@ -100,9 +111,18 @@ export function NoticeItem({
     : "bg-blue-100 text-blue-800";
 
   return (
-    <article className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+    <article className="flex flex-col rounded-md gap-3 p-4 mb-2 sm:flex-row sm:items-center border border-[#B5B5B5] bg-[#F9FBFF]">
       <span className={`flex size-10 shrink-0 items-center justify-center rounded-sm ${appearance}`}>
-        <Icon aria-hidden="true" className="size-5" />
+        {typeof Icon === "string" ? (
+          <img
+            src={Icon}
+            alt=""
+            aria-hidden="true"
+            className="size-14 object-contain"
+          />
+        ) : (
+          <Icon aria-hidden="true" className="size-5" />
+        )}
       </span>
       <p className="min-w-0 flex-1 text-sm text-slate-700">
         <strong className="mr-3 text-slate-900">{label}</strong>
