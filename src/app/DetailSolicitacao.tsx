@@ -96,6 +96,22 @@ export function DetailSolicitacao() {
 
   const nomeAuxilio = auxilioId ? nomesAuxilios[auxilioId] : undefined;
 
+  const iconesAuxilios: Record<string, string> = {
+    "auxilio-creche": "/icone-painel-geral/CrecheIcon.png",
+    "isencao-ru": "/icone-painel-geral/refeicaoIcon.png",
+    "auxilio-ingressante": "/icone-painel-geral/AddIcon.png",
+    "auxilio-emergencial": "/icone-painel-geral/AuxilioIcon.png",
+  };
+  const iconeAuxilio = auxilioId ? iconesAuxilios[auxilioId] : undefined;
+
+  const bordasStatus: Record<StatusSolicitacao, string> = {
+    disponivel: "border-amber-400 text-amber-500",
+    "documentacao-pendente": "border-orange-500 text-orange-600",
+    classificavel: "border-blue-600 text-blue-700",
+    deferido: "border-green-600 text-green-700",
+    indeferido: "border-rose-500 text-rose-600",
+  };
+
   useEffect(() => {
     let cancelado = false;
 
@@ -160,7 +176,7 @@ export function DetailSolicitacao() {
       <Header />
 
       <main className="flex-1">
-        <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8 text-slate-900">
+        <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8 text-slate-900">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs sm:text-sm">
             <nav aria-label="Navegação estrutural" className="flex items-center">
               <Link
@@ -172,19 +188,31 @@ export function DetailSolicitacao() {
               <span className="mx-2 text-slate-400" aria-hidden="true">
                 &gt;
               </span>
-              <span aria-current="page">
+              <span aria-current="page" className="font-semibold text-[#073989] ">
                 {nomeAuxilio ?? "Auxílio não encontrado"}
               </span>
             </nav>
 
-            <p className="text-slate-500">
+            <p className="mb-6 text-right text-xs text-[#073989]">
               Última atualização: {dataAtualizacao} - {horaAtualizacao}
             </p>
           </div>
 
           <div className="mt-5 flex items-center  gap-3 sm:mt-6">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-blue-100 text-blue-700 sm:h-12 sm:w-12">
-              <FiSmile aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center sm:h-12 sm:w-12 lg:h-14 lg:w-14">
+              {iconeAuxilio ? (
+                <img
+                  src={iconeAuxilio}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <FiSmile
+                  aria-hidden="true"
+                  className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                />
+              )}
             </span>
 
             <h1 className="text-xl font-semibold leading-tight sm:text-2xl lg:text-3xl">
@@ -216,7 +244,7 @@ export function DetailSolicitacao() {
                 Total por status
               </h2>
 
-              <div className="flex flex-wrap items-center gap-2 rounded-md border border-slate-300 bg-slate-50 p-3">
+              <div className="grid w-full grid-cols-2 justify-items-center gap-3 rounded-md border border-slate-300 bg-slate-50 py-2 sm:grid-cols-3 lg:grid-cols-5">
                 {ordemStatus.map((status) => {
                   const total = solicitacoes.filter(
                     (item) => item.status === status,
@@ -225,14 +253,14 @@ export function DetailSolicitacao() {
                   return (
                     <div
                       key={status}
-                      className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-2 sm:px-3"
+                      className={`inline-flex items-center overflow-hidden rounded-md border ${bordasStatus[status]}`}
                     >
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white sm:text-xs ${coresStatus[status]}`}
+                        className={`px-2.5 py-1 text-[10px] font-semibold text-white sm:text-xs ${coresStatus[status]}`}
                       >
                         {statusInfo[status].label}
                       </span>
-                      <span className="min-w-4 text-center text-xs font-bold text-slate-800 sm:text-sm">
+                      <span className="min-w-7 border-l border-current px-2 py-1 text-center text-xs font-semibold">
                         {total}
                       </span>
                     </div>
@@ -284,18 +312,16 @@ export function DetailSolicitacao() {
                 ordenadas.map((solicitacao) => (
                   <article
                     key={solicitacao.id}
-                    className="grid grid-cols-2 items-center gap-x-3 gap-y-3 rounded-md border border-slate-300 bg-slate-50 p-3 sm:gap-4 sm:p-4 md:min-h-[76px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(150px,auto)_40px] md:items-center"
+                    className="grid grid-cols-2 items-stretch gap-x-3 gap-y-3 rounded-md border border-slate-300 bg-slate-50 p-4 sm:gap-4 lg:min-h-[100px] lg:grid-cols-[repeat(3,minmax(0,1fr))_2.5rem] lg:px-8"
                   >
-                    <div className="min-w-0">
-                      <p className="text-[10px] uppercase text-slate-600 sm:text-xs">
-                        CPF
-                      </p>
+                    <div className="flex h-full min-w-0 flex-col justify-center items-start">
+                      <p className="text-[10px] uppercase text-slate-600 sm:text-xs">CPF</p>
                       <p className="truncate text-sm font-semibold text-slate-900 sm:text-base">
                         {mascararCpf(solicitacao.cpf)}
                       </p>
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="flex h-full min-w-0 flex-col justify-center items-center">
                       <p className="text-[10px] uppercase text-slate-600 sm:text-xs">
                         Data de submissão
                       </p>
@@ -304,12 +330,12 @@ export function DetailSolicitacao() {
                       </p>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="mb-1 text-[10px] uppercase text-slate-600 sm:text-xs md:text-center">
+                    <div className="flex h-full min-w-0 flex-col items-center justify-center text-center">
+                      <p className="mb-1 text-[10px] uppercase text-slate-600 sm:text-xs">
                         Status
                       </p>
                       <span
-                        className={`flex h-8 w-40 shrink-0 items-center justify-center rounded px-2 text-center text-[10px] font-medium leading-tight text-white sm:w-48 sm:px-3 sm:text-xs ${coresStatus[solicitacao.status]}`}
+                        className={`inline-flex min-h-7  min-w-45  max-w-full items-center justify-center rounded px-3 py-1 text-center text-[10px] font-medium leading-tight text-white sm:text-xs ${coresStatus[solicitacao.status]}`}
                       >
                         {statusInfo[solicitacao.status].label}
                       </span>
@@ -318,9 +344,9 @@ export function DetailSolicitacao() {
                     <Link
                       to={`/analise-solicitacao/${solicitacao.id}`}
                       aria-label={`Visualizar solicitação ${mascararCpf(solicitacao.cpf)}`}
-                      className="flex h-8 w-8 items-center justify-center justify-self-end text-slate-900 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 md:justify-self-center"
+                      className="flex h-8 w-8 self-center items-center justify-center justify-self-end text-slate-900 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 lg:justify-self-center"
                     >
-                      <FiSearch aria-hidden="true" className="h-5 w-5" />
+                      <FiSearch aria-hidden="true" className="h-6 w-6" />
                     </Link>
                   </article>
                 ))}

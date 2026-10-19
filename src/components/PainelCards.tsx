@@ -20,7 +20,7 @@ export function AidCard({
   return (
     <Link
       to={to}
-      className="flex flex-col gap-4 rounded-md border border-[#B5B5B5] bg-[#F9FBFF] p-6 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
+      className="flex flex-col gap-4 rounded-md border border-slate-300 bg-slate-50 p-6 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
     >
       
         {typeof Icon === "string" ? (

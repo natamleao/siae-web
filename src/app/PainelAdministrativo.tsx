@@ -2,6 +2,7 @@ import { FaBell, FaClock, FaExclamationTriangle, FaFileAlt, FaSmile, FaUtensils,
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { AidCard, MetricCard, NoticeItem } from "../components/PainelCards";
+import { formatDateTime } from "../utils/dateTime";
 
 const aids = [
   {
@@ -35,13 +36,10 @@ const aids = [
 ];
 
 export function PainelAdministrativo() {
-  const now = new Date();
-  const dateFormatter = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" });
-  const timeFormatter = new Intl.DateTimeFormat("pt-BR", { timeStyle: "short" });
-  const updatedAt = `${dateFormatter.format(now)} - ${timeFormatter.format(now)}`;
+  const updatedAt = formatDateTime();
 
   return (
-    <main className="flex min-h-screen flex-col bg-slate-50 ">
+    <main className="flex min-h-screen flex-col bg-white ">
       <Header/>
 
       <section className="w-full flex-1 text-slate-900">
@@ -61,9 +59,10 @@ export function PainelAdministrativo() {
                 Acompanhamento das Solicitações de Auxílios
               </h2>
               <p className="mb-4 text-sm text-slate-600">
-                Selecione um dos cards abaixo para visualizar o painel de cada auxílio:              </p>
+                Selecione um dos cards abaixo para visualizar o painel de cada auxílio:              
+              </p>
 
-              <div className="space-y-3">
+              <div className="space-y-3 ">
                 {aids.map((aid) => (
                     <AidCard
                     key={aid.id}
