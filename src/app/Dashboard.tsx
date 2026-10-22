@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaBaby, FaUserPlus, FaUtensils } from 'react-icons/fa6';
+import type { IconType } from 'react-icons';
+import { FaUserPlus } from 'react-icons/fa6';
 import { TbUrgent } from 'react-icons/tb';
+import { PiBaby } from 'react-icons/pi';
+import { MdOutlineRestaurant } from 'react-icons/md';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { AvisosCarrossel } from '../components/AvisosCarrossel';
@@ -10,18 +13,18 @@ import { SolicitacaoItem } from '../components/SolicitacaoItem';
 import { useAuthContext } from '../context/AuthContext';
 import { AUXILIOS_MOCK, SOLICITACOES_MOCK } from '../config/auxilios';
 
-const AUXILIO_ICONS: Record<string, typeof FaBaby> = {
-    creche: FaBaby,
-    'isencao-ru': FaUtensils,
+const AUXILIO_ICONS: Record<string, IconType> = {
+    creche: PiBaby,
+    'isencao-ru': MdOutlineRestaurant,
     ingressante: FaUserPlus,
     emergencial: TbUrgent,
 };
 
-const SOLICITACAO_ICONS: Record<string, typeof FaBaby> = {
+const SOLICITACAO_ICONS: Record<string, IconType> = {
     'Auxílio Emergencial': TbUrgent,
-    'Isenção Parcial do RU': FaUtensils,
+    'Isenção Parcial do RU': MdOutlineRestaurant,
     'Auxílio Ingressante': FaUserPlus,
-    'Auxílio Creche': FaBaby,
+    'Auxílio Creche': PiBaby,
 };
 
 function CardsSkeleton() {

@@ -42,7 +42,7 @@ export function SolicitacaoItem({ solicitacao, icon: Icon }: SolicitacaoItemProp
                     <p className="text-[#646262] text-[11px] font-semibold">STATUS</p>
                     {statusBadge}
                 </div>
-                <FaMagnifyingGlass className="text-black shrink-0" size={20} />
+                <FaMagnifyingGlass className="text-black shrink-0 ml-10" size={20} />
             </div>
 
             {/* Mobile: cabeçalho do acordeão. Detalhes só aparecem expandido (M8|P9). */}
