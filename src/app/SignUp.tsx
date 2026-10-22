@@ -181,7 +181,15 @@ export function SignUp() {
                                     }}
                                     error={errors.senha}
                                     valid={authService.validatePasswordStrength(senha)}
-                                    tooltip="A senha deve conter: entre 8 e 16 caracteres, letra minúscula, letra maiúscula, número e caractere especial (!, @, #, $, %, &, *, -, _)"
+                                    tooltip={(
+                                        <ul className="list-disc pl-4 space-y-0.5">
+                                            <li>8 a 16 caracteres</li>
+                                            <li>Letra minúscula</li>
+                                            <li>Letra maiúscula</li>
+                                            <li>Número</li>
+                                            <li>Caractere especial (!, @, #, $, %, &, *, -, _)</li>
+                                        </ul>
+                                    )}
                                     required
                                     placeholder="Digite sua senha"
                                     maxLength={AUTH.MAX_PASSWORD_LENGTH}
@@ -215,11 +223,7 @@ export function SignUp() {
                             <button
                                 type="submit"
                                 disabled={isDisabled}
-                                className={`w-[220px] rounded-[8px] px-[20px] py-[12px] text-[20px] font-semibold transition-all duration-300 ${
-                                    isDisabled
-                                    ? 'bg-gray-400 cursor-not-allowed text-black'
-                                    : 'bg-[#1058cc] text-white hover:bg-blue-700'
-                                }`}
+                                className="w-[220px] rounded-[8px] px-[20px] py-[12px] text-[20px] font-semibold text-white bg-[#1058cc] transition-all duration-300 hover:bg-blue-700 disabled:cursor-not-allowed disabled:hover:bg-[#1058cc]"
                             >
                                 {loading ? "Cadastrando..." : "Cadastrar"}
                             </button>
