@@ -40,7 +40,7 @@ function CardsSkeleton() {
 export function Dashboard() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const { logout } = useAuthContext();
+    const { user, logout } = useAuthContext();
 
     useEffect(() => {
         const getUserData = async () => {
