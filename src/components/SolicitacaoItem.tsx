@@ -15,7 +15,7 @@ export function SolicitacaoItem({ solicitacao, icon: Icon }: SolicitacaoItemProp
 
     const statusBadge = (
         <span
-            className="rounded-[14px] h-[27px] px-3 flex items-center justify-center text-[12px] font-bold whitespace-nowrap"
+            className="rounded-[14px] h-[27px] w-[163px] flex items-center justify-center text-[12px] font-bold whitespace-nowrap"
             style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}
         >
             {status}
@@ -29,20 +29,22 @@ export function SolicitacaoItem({ solicitacao, icon: Icon }: SolicitacaoItemProp
             className="bg-[#f9fbff] border border-[#b5b5b5] rounded-[8px] w-full flex flex-col text-left max-md:cursor-pointer md:cursor-default"
         >
             {/* Desktop: linha única, igual ao Figma. Some no mobile (M8|P9 - vira acordeão). */}
-            <div className="hidden md:flex items-center h-[106px] px-[40px] gap-3 w-full">
-                <div className="bg-[#c1d4ff] rounded-[6px] w-[48px] h-[50px] flex items-center justify-center shrink-0">
-                    <Icon className="text-[#1058cc]" size={22} />
+            <div className="hidden md:flex items-center justify-between h-[106px] px-10 w-full">
+                <div className="flex items-center gap-3">
+                    <div className="bg-[#c1d4ff] rounded-[6px] w-[48px] h-[50px] flex items-center justify-center shrink-0">
+                        <Icon className="text-[#1058cc]" size={22} />
+                    </div>
+                    <p className="font-semibold text-black text-[20px] w-[210px]">{auxilioNome}</p>
                 </div>
-                <p className="font-semibold text-black text-[20px] w-[210px]">{auxilioNome}</p>
-                <div className="flex-1 flex flex-col items-center text-black">
+                <div className="flex flex-col items-center text-black">
                     <p className="text-[#646262] text-[11px]">DATA DE SUBMISSÃO</p>
                     <p className="font-bold text-[20px]">{dataSubmissao}</p>
                 </div>
-                <div className="flex flex-col items-end gap-1 w-[163px]">
+                <div className="flex flex-col items-end gap-1">
                     <p className="text-[#646262] text-[11px] font-semibold">STATUS</p>
                     {statusBadge}
                 </div>
-                <FaMagnifyingGlass className="text-black shrink-0 ml-10" size={20} />
+                <FaMagnifyingGlass className="text-black shrink-0" size={20} />
             </div>
 
             {/* Mobile: cabeçalho do acordeão. Detalhes só aparecem expandido (M8|P9). */}
