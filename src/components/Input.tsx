@@ -82,7 +82,7 @@ export const InputField: React.FC<InputProps> = ({
                 {tooltip && (
                     <span className="relative inline-flex group">
                         <HelpTooltipIcon className="cursor-help" />
-                        <span className="pointer-events-none absolute left-1/2 top-full z-10 mt-1 w-64 -translate-x-1/2 rounded-md bg-gray-800 p-2 text-xs font-normal text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                        <span className="pointer-events-none absolute left-1/2 top-full z-10 mt-1 w-72 -translate-x-1/2 rounded-md bg-[#073989] p-3 text-xs font-normal text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                             {tooltip}
                         </span>
                     </span>

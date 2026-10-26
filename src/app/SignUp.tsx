@@ -182,13 +182,16 @@ export function SignUp() {
                                     error={errors.senha}
                                     valid={authService.validatePasswordStrength(senha)}
                                     tooltip={(
-                                        <ul className="list-disc pl-4 space-y-0.5">
-                                            <li>8 a 16 caracteres</li>
-                                            <li>Letra minúscula</li>
-                                            <li>Letra maiúscula</li>
-                                            <li>Número</li>
-                                            <li>Caractere especial (!, @, #, $, %, &, *, -, _)</li>
-                                        </ul>
+                                        <>
+                                            <p className="font-semibold mb-1">A senha deve conter:</p>
+                                            <ul className="list-disc pl-4 space-y-0.5">
+                                                <li>Entre 8 e 16 caracteres</li>
+                                                <li>Letras minúsculas (a-z)</li>
+                                                <li>Letras maiúsculas (A-Z)</li>
+                                                <li>Números (0-9)</li>
+                                                <li>Caracteres especiais (!, @, #, $, %, &, *, -, _)</li>
+                                            </ul>
+                                        </>
                                     )}
                                     required
                                     placeholder="Digite sua senha"
