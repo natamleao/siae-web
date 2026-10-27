@@ -23,11 +23,11 @@ export const statusInfo: Record<
   { label: string; classes: string }
 > = {
   disponivel: {
-    label: "Disponível para Análise",
+    label: "Disponível",
     classes: "bg-amber-100 text-amber-900",
   },
   "documentacao-pendente": {
-    label: "Documentação Pendente",
+    label: "Pendente",
     classes: "bg-orange-100 text-orange-900",
   },
   classificavel: {

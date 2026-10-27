@@ -20,7 +20,7 @@ export function AidCard({
   return (
     <Link
       to={to}
-      className="flex flex-col gap-4 rounded-md border border-slate-300 bg-slate-50 p-6 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
+      className="flex flex-col gap-4 max-w-[40rem] rounded-md border border-slate-300 bg-slate-50 p-6 no-underline transition hover:scale-[1.01] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center"
     >
       
         {typeof Icon === "string" ? (
@@ -39,14 +39,14 @@ export function AidCard({
         {title}
       </h3>
 
-      <dl className="grid grid-cols-2 gap-4 sm:w-44">
-        <div>
-          <dt className="text-xs uppercase text-slate-500">Recebidos</dt>
-          <dd className="text-lg font-bold text-slate-900">{received}</dd>
+      <dl className="grid grid-cols-2 gap-8 sm:w-44 ">
+        <div >
+          <dt className="text-xs text-right uppercase text-slate-500">Recebidos</dt>
+          <dd className="text-lg text-right font-bold text-slate-900 ">{received}</dd>
         </div>
         <div>
-          <dt className="text-xs uppercase text-slate-500">Em análise</dt>
-          <dd className="text-lg font-bold text-slate-900">{underReview}</dd>
+          <dt className="text-xs text-right uppercase text-slate-500">Em análise</dt>
+          <dd className="text-lg text-right font-bold text-slate-900">{underReview}</dd>
         </div>
       </dl>
 

@@ -65,6 +65,14 @@ const coresStatus: Record<StatusSolicitacao, string> = {
   indeferido: "bg-rose-500",
 };
 
+const rotulosStatusSolicitacao: Record<StatusSolicitacao, string> = {
+  disponivel: "Disponível para análise",
+  "documentacao-pendente": "Documentação Pendente",
+  classificavel: "Classificavel",
+  deferido: "Deferido",
+  indeferido: "Indeferido",
+};
+
 function normalizar(texto: string) {
   return texto
     .normalize("NFD")
@@ -239,33 +247,39 @@ export function DetailSolicitacao() {
           </div>
 
           {!carregando && !erro && (
-            <section className="mt-5 sm:mt-6" aria-label="Totais por status">
+            <section className="mt-5 w-full sm:mt-6" aria-label="Totais por status">
               <h2 className="mb-2 text-xs font-medium uppercase text-slate-600">
                 Total por status
               </h2>
 
-              <div className="grid w-full grid-cols-2 justify-items-center gap-3 rounded-md border border-slate-300 bg-slate-50 py-2 sm:grid-cols-3 lg:grid-cols-5">
-                {ordemStatus.map((status) => {
-                  const total = solicitacoes.filter(
-                    (item) => item.status === status,
-                  ).length;
+              <div className="w-full rounded-md border border-slate-300 bg-slate-50 p-4">
+                {/* 
+                  max-w-4xl (ou max-w-5xl): limita a largura máxima do bloco de cards
+                  mx-auto: centraliza o container horizontalmente, criando as sobras nas laterais
+                */}
+                <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+                  {ordemStatus.map((status) => {
+                    const total = solicitacoes.filter(
+                      (item) => item.status === status,
+                    ).length;
 
-                  return (
-                    <div
-                      key={status}
-                      className={`inline-flex items-center overflow-hidden rounded-md border ${bordasStatus[status]}`}
-                    >
-                      <span
-                        className={`px-2.5 py-1 text-[10px] font-semibold text-white sm:text-xs ${coresStatus[status]}`}
+                    return (
+                      <div
+                        key={status}
+                        className={`flex w-full sm:w-[calc(50%-0.375rem)] lg:w-[calc(20%-0.6rem)] max-w-[150px] items-center justify-center overflow-hidden rounded-md border bg-white shadow-sm ${bordasStatus[status]}`}
                       >
-                        {statusInfo[status].label}
-                      </span>
-                      <span className="min-w-7 border-l border-current px-2 py-1 text-center text-xs font-semibold">
-                        {total}
-                      </span>
-                    </div>
-                  );
-                })}
+                        <span
+                          className={`flex-1 px-2.5 py-1.5 text-center text-[10px] font-semibold text-white sm:text-xs ${coresStatus[status]}`}
+                        >
+                          {statusInfo[status].label}
+                        </span>
+                        <span className="min-w-8 border-l border-slate-200 px-2 py-1.5 text-center text-xs font-semibold text-slate-700">
+                          {total}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </section>
           )}
@@ -309,7 +323,7 @@ export function DetailSolicitacao() {
 
               {!carregando &&
                 !erro &&
-                ordenadas.map((solicitacao) => (
+                ordenadas.map((solicitacao: Solicitacao) => (
                   <article
                     key={solicitacao.id}
                     className="grid grid-cols-2 items-stretch gap-x-3 gap-y-3 rounded-md border border-slate-300 bg-slate-50 p-4 sm:gap-4 lg:min-h-[100px] lg:grid-cols-[repeat(3,minmax(0,1fr))_2.5rem] lg:px-8"
@@ -330,15 +344,17 @@ export function DetailSolicitacao() {
                       </p>
                     </div>
 
-                    <div className="flex h-full min-w-0 flex-col items-center justify-center text-center">
-                      <p className="mb-1 text-[10px] uppercase text-slate-600 sm:text-xs">
-                        Status
-                      </p>
-                      <span
-                        className={`inline-flex min-h-7  min-w-45  max-w-full items-center justify-center rounded px-3 py-1 text-center text-[10px] font-medium leading-tight text-white sm:text-xs ${coresStatus[solicitacao.status]}`}
-                      >
-                        {statusInfo[solicitacao.status].label}
-                      </span>
+                    <div className="flex h-full min-w-0 flex-col items-center justify-center">
+                      <div className="flex flex-col items-end ">
+                          <p className="mb-1 text-[10px] uppercase text-slate-600 sm:text-xs">
+                            Status
+                          </p>
+                          <span
+                            className={`inline-flex min-h-7 min-w-45 max-w-full items-center justify-center rounded px-3 py-1 text-center text-[10px] font-medium leading-tight text-white sm:text-xs ${coresStatus[solicitacao.status]}`}
+                          >
+                            {rotulosStatusSolicitacao[solicitacao.status]}
+                          </span>
+                      </div>
                     </div>
 
                     <Link
