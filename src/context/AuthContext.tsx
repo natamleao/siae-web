@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { authService } from '../services/authService';
 import type { User } from '../types/auth';
 
@@ -21,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return authService.getUser();
   })
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   useEffect(() => {
     const authenticated = authService.isAuthenticated();
