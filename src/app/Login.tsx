@@ -6,7 +6,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { ToastContainer, toast } from 'react-toastify';
 import { ERROR_MESSAGES } from "../config/constants";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/useAuthContext";
 
 
 export function Login() {
