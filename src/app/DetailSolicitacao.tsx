@@ -66,7 +66,7 @@ const coresStatus: Record<StatusSolicitacao, string> = {
 };
 
 const rotulosStatusSolicitacao: Record<StatusSolicitacao, string> = {
-  disponivel: "Disponível para análise",
+  disponivel: "Disponível para Análise",
   "documentacao-pendente": "Documentação Pendente",
   classificavel: "Classificavel",
   deferido: "Deferido",

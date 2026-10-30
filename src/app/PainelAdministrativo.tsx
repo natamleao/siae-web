@@ -1,4 +1,3 @@
-import { FaBell, FaClock, FaExclamationTriangle, FaFileAlt, FaSmile, FaUtensils, FaUserPlus } from "react-icons/fa";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { AidCard, MetricCard, NoticeItem } from "../components/PainelCards";
