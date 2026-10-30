@@ -76,8 +76,24 @@ export function validatePhone(phone: string): boolean {
   return clean.length >= 10 && clean.length <= 11; // DDD + number
 }
 
+interface FormData {
+  nomeCompleto: string;
+  cpf: string;
+  rg: string;
+  dataNascimento: string;
+  responsavel: string;
+  nomeResponsavel: string;
+  sexo: string;
+  identidadeGenero: string;
+  orientacaoSexual: string;
+  etniaRacaCor: string;
+  estadoCivil: string;
+  temDeficiencia: string;
+  telefonePrincipal: string;
+  emailInstitucional: string;
+}
 
-export function validateForm(formData: any, setErrors: (errors: Record<string, string>) => void): boolean {
+export function validateForm(formData: FormData, setErrors: (errors: Record<string, string>) => void): boolean {
   const newErrors: Record<string, string> = {};
   const requiredMessage = "Campo obrigatório não preenchido.";
 

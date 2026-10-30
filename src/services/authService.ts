@@ -47,28 +47,24 @@ class AuthService {
       throw new Error(ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH);
     }
 
-    try {
-      const response = await apiRequest<RegisterResponse>(
-        getApiUrl(API_ENDPOINTS.REGISTER),
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            email,
-            password,
-            matricula: Number(matricula),
-            permissao: 0,
-          }),
-        }
-      );
-
-      if (response.token) {
-        this.setToken(response.token);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
+    const response = await apiRequest<RegisterResponse>(
+    getApiUrl(API_ENDPOINTS.REGISTER),
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        password,
+        matricula: Number(matricula),
+        permissao: 0,
+      }),
     }
+  );
+
+  if (response.token) {
+    this.setToken(response.token);
+  }
+
+  return response;
   }
 
   async forgotPassword(identifier: string): Promise<ForgotPasswordResponse> {
