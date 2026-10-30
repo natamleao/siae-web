@@ -253,11 +253,7 @@ export function DetailSolicitacao() {
               </h2>
 
               <div className="w-full rounded-md border border-slate-300 bg-slate-50 p-4">
-                {/* 
-                  max-w-4xl (ou max-w-5xl): limita a largura máxima do bloco de cards
-                  mx-auto: centraliza o container horizontalmente, criando as sobras nas laterais
-                */}
-                <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,190px),1fr))] gap-4">
                   {ordemStatus.map((status) => {
                     const total = solicitacoes.filter(
                       (item) => item.status === status,
@@ -266,14 +262,14 @@ export function DetailSolicitacao() {
                     return (
                       <div
                         key={status}
-                        className={`flex w-full sm:w-[calc(50%-0.375rem)] lg:w-[calc(20%-0.6rem)] max-w-[150px] items-center justify-center overflow-hidden rounded-md border bg-white shadow-sm ${bordasStatus[status]}`}
+                        className={`flex items-center justify-center overflow-hidden rounded-md border bg-white shadow-sm ${bordasStatus[status]}`}
                       >
                         <span
-                          className={`flex-1 px-2.5 py-1.5 text-center text-[10px] font-semibold text-white sm:text-xs ${coresStatus[status]}`}
+                          className={`flex-1 whitespace-nowrap px-2.5 py-1.5 text-center text-[10px] font-semibold text-white sm:text-xs ${coresStatus[status]}`}
                         >
                           {statusInfo[status].label}
                         </span>
-                        <span className="min-w-8 border-l border-slate-200 px-2 py-1.5 text-center text-xs font-semibold text-slate-700">
+                        <span className="min-w-8 shrink-0 border-l border-slate-200 px-2 py-1.5 text-center text-xs font-semibold text-slate-700">
                           {total}
                         </span>
                       </div>
