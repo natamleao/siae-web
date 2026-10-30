@@ -5,7 +5,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { InputField } from "../components/Input";
 import { authService } from "../services/authService";
-import { ERROR_MESSAGES, TIMINGS, AUTH } from "../config/constants";
+import { ERROR_MESSAGES, TIMINGS } from "../config/constants";
 
 export function SignUp() {
     const [matricula, setMatricula] = useState("");

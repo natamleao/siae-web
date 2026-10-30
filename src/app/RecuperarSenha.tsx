@@ -5,7 +5,7 @@ import { InputField } from '../components/Input';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { authService } from '../services/authService';
-import { AUTH, ERROR_MESSAGES, TIMINGS } from '../config/constants';
+import { ERROR_MESSAGES } from '../config/constants';
 import { useAuth } from '../hooks/useAuth';
 
 export function RecuperarSenha() {

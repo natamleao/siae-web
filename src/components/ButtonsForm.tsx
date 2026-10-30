@@ -8,7 +8,7 @@ interface ButtonFormsProps {
 }
 
 export default function ButtonForms({ previousStep, isFirstStep, isLastStep, formId }: ButtonFormsProps) {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const isDisabled = loading;
 
   return (
