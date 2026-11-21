@@ -25,6 +25,18 @@ export function SignUp() {
         return AUTH.MATRICULA_REGEX.test(matricula);
     };
 
+    const validateName = (name: string): boolean => {
+        const normalizedName = name.trim().replace(/\s+/g, " ");
+        const words = normalizedName.split(" ");
+
+        return (
+            normalizedName.length >= 1 &&
+            normalizedName.length <= 50 &&
+            words.length >= 2 &&
+            /^[\p{L}\s]+$/u.test(normalizedName)
+        );
+    };
+
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
@@ -34,8 +46,10 @@ export function SignUp() {
             newErrors.matricula = 'Matrícula deve conter 6 dígitos';
         }
 
-        if (!nomeCompleto) {
+        if (!nomeCompleto.trim()) {
             newErrors.nomeCompleto = 'Nome completo é obrigatório';
+        } else if (!validateName(nomeCompleto)) {
+            newErrors.nomeCompleto = 'Informe nome e sobrenome, usando apenas letras, com até 50 caracteres';
         }
 
         if (!email) {
@@ -72,7 +86,7 @@ export function SignUp() {
         setLoading(true);
 
         try {
-            const response = await authService.register(email, senha, matricula);
+            const response = await authService.register(nomeCompleto, matricula, email, senha);
             toast.success(response.message || 'Cadastro realizado com sucesso!');
 
             setTimeout(() => navigate("/"), TIMINGS.REDIRECT_DELAY);

@@ -2,31 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { InputField } from '../components/Input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { authService } from '../services/authService';
-import { ERROR_MESSAGES } from '../config/constants';
+import { AUTH, ERROR_MESSAGES, TIMINGS } from '../config/constants';
 import { useAuth } from '../hooks/useAuth';
 
 export function RecuperarSenha() {
-    const [identifier, setIdentifier] = useState<string>('');
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const token = searchParams.get('token');
+    const isResetMode = Boolean(token);
+
+    const [identifier, setIdentifier] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
     const [isEmailMode, setIsEmailMode] = useState(true);
-    const [timeLeft, setTimeLeft] = useState<number>(0);
-    
+    const [timeLeft, setTimeLeft] = useState(0);
+
     const { isLockedOut, getLockoutTimeRemaining } = useAuth();
 
     useEffect(() => {
+        if (isResetMode) return;
+
         let timer: number | null = null;
-        
+
         if (isLockedOut()) {
             const remaining = getLockoutTimeRemaining();
             setTimeLeft(Math.max(0, remaining));
 
             timer = window.setInterval(() => {
                 const currentRemaining = getLockoutTimeRemaining();
+
                 if (currentRemaining <= 0) {
-                    if (timer) clearInterval(timer);
+                    if (timer !== null) clearInterval(timer);
                     setTimeLeft(0);
                 } else {
                     setTimeLeft(Math.max(0, currentRemaining));
@@ -35,35 +47,87 @@ export function RecuperarSenha() {
         }
 
         return () => {
-            if (timer) clearInterval(timer);
+            if (timer !== null) clearInterval(timer);
         };
-    }, [isLockedOut, getLockoutTimeRemaining]);
+    }, [isResetMode, isLockedOut, getLockoutTimeRemaining]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (isLockedOut()) return; 
+        if (!isResetMode && isLockedOut()) return;
+
+        if (isResetMode) {
+            let hasError = false;
+
+            if (!newPassword) {
+                setPasswordError('Nova senha é obrigatória');
+                hasError = true;
+            } else if (!authService.validatePasswordStrength(newPassword)) {
+                setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH);
+                hasError = true;
+            } else {
+                setPasswordError('');
+            }
+
+            if (!confirmPassword) {
+                setConfirmPasswordError('Confirmação de senha é obrigatória');
+                hasError = true;
+            } else if (newPassword !== confirmPassword) {
+                setConfirmPasswordError(ERROR_MESSAGES.PASSWORD_MISMATCH);
+                hasError = true;
+            } else {
+                setConfirmPasswordError('');
+            }
+
+            if (hasError || !token) return;
+
+            setLoading(true);
+
+            try {
+                const response = await authService.resetPassword(token, newPassword);
+                toast.success(response.message || 'Senha redefinida com sucesso!');
+                window.setTimeout(() => navigate('/'), TIMINGS.REDIRECT_DELAY);
+            } catch (error: unknown) {
+                toast.error(
+                    error instanceof Error
+                        ? error.message
+                        : ERROR_MESSAGES.SERVER_ERROR
+                );
+            } finally {
+                setLoading(false);
+            }
+
+            return;
+        }
 
         setLoading(true);
 
         try {
             const response = await authService.forgotPassword(identifier);
-            toast.success(response.message || 'Email de recuperação enviado!');
+            toast.success(
+                response.message ||
+                'Se os dados estiverem corretos, você receberá um link de recuperação.'
+            );
             setIdentifier('');
-
         } catch (error: unknown) {
-            if (error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error(ERROR_MESSAGES.SERVER_ERROR);
-            }
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : ERROR_MESSAGES.SERVER_ERROR
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    const isButtonDisabled = !identifier || loading || isLockedOut();
-    
+    const isLocked = !isResetMode && isLockedOut();
+
+    const isButtonDisabled = loading || (
+        isResetMode
+            ? !newPassword || !confirmPassword
+            : !identifier || isLocked
+    );
+
     const secondsLeft = Math.ceil(timeLeft / 1000) % 60;
     const minutesLeft = Math.floor(timeLeft / 60000);
 
@@ -76,36 +140,90 @@ export function RecuperarSenha() {
                 <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-[#073989] bg-white shadow-[0_8px_18px_rgba(0,0,0,0.25)] md:grid-cols-2">
                     <div className="order-2 flex flex-col justify-center bg-[#ECE8E8] p-6 text-left sm:p-8 lg:p-10 xl:p-12 md:order-1">
                         <h2 className="mb-3 text-2xl font-bold leading-tight text-black sm:text-3xl">
-                            Recuperação de senha
+                            {isResetMode ? 'Redefinir senha' : 'Recuperação de senha'}
                         </h2>
 
                         <p className="mb-5 text-sm leading-5 text-black">
-                            As instruções de redefinição de senha serão enviadas para seu e-mail institucional.
+                            {isResetMode
+                                ? 'Defina sua nova senha de acesso ao SIAE.'
+                                : 'As instruções de redefinição de senha serão enviadas para o e-mail associado à sua conta.'}
                         </p>
 
                         <form onSubmit={handleSubmit} className="flex flex-col">
-                            <div className="[&_input]:!border [&_input]:!border-[#999] [&_input]:!bg-white">
-                                <InputField
-                                    id="identifier"
-                                    label={isEmailMode ? "E-mail institucional" : "Matrícula ou SIAPE"}
-                                    type={isEmailMode ? "email" : "number"}
-                                    placeholder={isEmailMode ? "ex:aluno@alu.ufc.br" : "ex: 12345678"}
-                                    value={identifier}
-                                    onChange={(e) => setIdentifier(e.target.value)}
-                                    required
-                                    disabled={isLockedOut()}
-                                    labelClassName="!text-sm !font-normal !text-black "
-                                />
-                            </div>
+                            {isResetMode ? (
+                                <>
+                                    <div className="[&_input]:!border [&_input]:!border-[#999] [&_input]:!bg-white">
+                                        <InputField
+                                            id="newPassword"
+                                            label="Nova senha"
+                                            type="password"
+                                            placeholder="Digite sua nova senha"
+                                            value={newPassword}
+                                            onChange={(e) => {
+                                                setNewPassword(e.target.value);
+                                                if (passwordError) setPasswordError('');
+                                            }}
+                                            required
+                                            minLength={AUTH.MIN_PASSWORD_LENGTH}
+                                            maxLength={AUTH.MAX_PASSWORD_LENGTH}
+                                            error={passwordError}
+                                            forceShowError={Boolean(passwordError)}
+                                            showPasswordToggle
+                                            labelClassName="!text-sm !font-normal !text-black"
+                                        />
+                                    </div>
 
-                            <button
-                                type="button"
-                                onClick={() => setIsEmailMode(!isEmailMode)}
-                                className="mt-2 self-start text-sm font-medium text-[#1058CC] underline disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled={isLockedOut()}
-                            >
-                                {isEmailMode ? "Usar Matrícula/Siape" : "Usar E-mail Institucional"}
-                            </button>
+                                    <p className="mt-2 text-xs leading-5 text-gray-700">
+                                        A senha deve ter de 8 a 16 caracteres, incluindo letra maiúscula, letra minúscula, número e caractere especial.
+                                    </p>
+
+                                    <div className="mt-4 [&_input]:!border [&_input]:!border-[#999] [&_input]:!bg-white">
+                                        <InputField
+                                            id="confirmPassword"
+                                            label="Confirmar nova senha"
+                                            type="password"
+                                            placeholder="Digite novamente sua nova senha"
+                                            value={confirmPassword}
+                                            onChange={(e) => {
+                                                setConfirmPassword(e.target.value);
+                                                if (confirmPasswordError) setConfirmPasswordError('');
+                                            }}
+                                            required
+                                            minLength={AUTH.MIN_PASSWORD_LENGTH}
+                                            maxLength={AUTH.MAX_PASSWORD_LENGTH}
+                                            error={confirmPasswordError}
+                                            forceShowError={Boolean(confirmPasswordError)}
+                                            showPasswordToggle
+                                            labelClassName="!text-sm !font-normal !text-black"
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="[&_input]:!border [&_input]:!border-[#999] [&_input]:!bg-white">
+                                        <InputField
+                                            id="identifier"
+                                            label={isEmailMode ? 'E-mail institucional' : 'Matrícula ou SIAPE'}
+                                            type={isEmailMode ? 'email' : 'number'}
+                                            placeholder={isEmailMode ? 'ex: aluno@alu.ufc.br' : 'ex: 12345678'}
+                                            value={identifier}
+                                            onChange={(e) => setIdentifier(e.target.value)}
+                                            required
+                                            disabled={isLocked}
+                                            labelClassName="!text-sm !font-normal !text-black"
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEmailMode(!isEmailMode)}
+                                        className="mt-2 self-start text-sm font-medium text-[#1058CC] underline disabled:cursor-not-allowed disabled:opacity-50"
+                                        disabled={isLocked}
+                                    >
+                                        {isEmailMode ? 'Usar Matrícula/SIAPE' : 'Usar E-mail Institucional'}
+                                    </button>
+                                </>
+                            )}
 
                             <button
                                 type="submit"
@@ -116,19 +234,17 @@ export function RecuperarSenha() {
                                         : 'bg-[#1058CC] hover:bg-[#073989]'
                                 }`}
                             >
-                                {isLockedOut() 
-                                    ? `Bloqueado (${minutesLeft}m ${secondsLeft}s)` 
-                                    : loading 
-                                        ? 'Processando...' 
-                                        : 'Redefinir senha'
-                                }
+                                {isLocked
+                                    ? `Bloqueado (${minutesLeft}m ${secondsLeft}s)`
+                                    : loading
+                                        ? 'Processando...'
+                                        : isResetMode
+                                            ? 'Salvar nova senha'
+                                            : 'Enviar link de recuperação'}
                             </button>
 
                             <div className="mt-3 flex justify-center">
-                                <Link
-                                    to="/"
-                                    className="text-sm text-[#1058CC] hover:underline"
-                                >
+                                <Link to="/" className="text-sm text-[#1058CC] hover:underline">
                                     Deseja voltar ao login?
                                 </Link>
                             </div>

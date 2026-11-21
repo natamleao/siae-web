@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Login } from "./Login";
 import { SignUp } from "./SignUp";
 import { RecuperarSenha } from "./RecuperarSenha";
 import { Dashboard } from "./Dashboard";
-import {PainelAdministrativo} from "./PainelAdministrativo";
+import { PainelAdministrativo } from "./PainelAdministrativo";
 import { DetailSolicitacao } from "./DetailSolicitacao";
 import { Formulario } from "./formulario";
 import { ProtectedRoute } from "../components/ProtectedRoute";
@@ -17,17 +17,25 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/cadastro" element={<PublicRoute><SignUp /></PublicRoute>} />
-                    <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
-                    {/* Passar pra rota privada depois q terminar */}
+                    <Route path="/recuperar-senha" element={<RecuperarSenha />} />
                     <Route path="/formulario" element={<PublicRoute><Formulario /></PublicRoute>} />
-                    <Route
-                    path="/detalhe-solicitacao/:auxilioId"
-                    element={<DetailSolicitacao />}
-                    />
-                    <Route path="/PainelAdministrativo" element={<PainelAdministrativo />} />
 
-                    <Route element={<ProtectedRoute />}>
+                    <Route
+                        path="/detalhe-solicitacao/:auxilioId"
+                        element={<DetailSolicitacao />}
+                    />
+
+                    <Route element={<ProtectedRoute permissoesPermitidas={["ALUNO"]} />}>
                         <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
+
+                    <Route element={
+                        <ProtectedRoute permissoesPermitidas={["TECNICO", "ASSISTENTE"]} />
+                    }>
+                        <Route
+                            path="/paineladministrativo"
+                            element={<PainelAdministrativo />}
+                        />
                     </Route>
                 </Routes>
             </BrowserRouter>

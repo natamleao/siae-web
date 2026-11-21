@@ -1,0 +1,3 @@
+window.__SIAE_CONFIG__ = Object.freeze({
+  API_URL: "${API_URL}"
+});

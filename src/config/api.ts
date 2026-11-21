@@ -1,4 +1,21 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+declare global {
+  interface Window {
+    __SIAE_CONFIG__?: {
+      API_URL?: string;
+    };
+  }
+}
+
+const API_URL = import.meta.env.DEV
+  ? import.meta.env.VITE_API_URL || 'http://localhost:3000'
+  : window.__SIAE_CONFIG__?.API_URL;
+
+if (!API_URL) {
+  throw new Error(
+    'Configuração da API ausente. Verifique a variável API_URL do ambiente.'
+  );
+}
 
 export const getApiUrl = (endpoint: string): string => {
   return `${API_URL}${endpoint}`;

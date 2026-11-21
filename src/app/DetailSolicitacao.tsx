@@ -188,7 +188,7 @@ export function DetailSolicitacao() {
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs sm:text-sm">
             <nav aria-label="Navegação estrutural" className="flex items-center">
               <Link
-                to="/PainelAdministrativo"
+                to="/paineladministrativo"
                 className="text-blue-700 hover:underline"
               >
                 Painel Geral

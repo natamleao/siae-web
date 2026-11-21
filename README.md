@@ -190,7 +190,7 @@ A aplicação estará disponível em:
 
 ### 🐳 Execução com Docker
 
-O frontend também pode ser executado utilizando Docker Compose, dispensando a instalação local das dependências do projeto.
+O projeto possui duas configurações Docker Compose: uma para desenvolvimento e outra para produção.
 
 #### 1. Clonar o repositório
 
@@ -199,61 +199,101 @@ git clone https://github.com/devsiae-ludi/siae-web.git
 cd siae-web
 ```
 
-#### 2. Configurar as variáveis de ambiente
+#### 2. Desenvolvimento com Docker
 
-Crie o arquivo `.env` com base no modelo:
+Crie o arquivo de ambiente:
 
 ```bash
 cp .env.example .env
 ```
 
-Configure a URL da API:
+Configure o endereço da API:
 
 ```env
 VITE_API_URL=http://localhost:3000
 ```
 
-**Importante:** a variável `VITE_API_URL` é utilizada durante a construção da imagem Docker. Portanto, alterações nessa variável exigem a reconstrução da imagem.
-
-#### 3. Construir e iniciar o container
+Construa e inicie o ambiente:
 
 ```bash
 docker compose up -d --build
 ```
 
-#### 4. Acessar a aplicação
+O servidor de desenvolvimento ficará disponível em:
 
-Após a inicialização, o frontend estará disponível em:
+👉 **http://localhost:5173**
+
+O código-fonte é montado no container, permitindo a atualização automática do Vite.
+
+Se alterar o valor de `VITE_API_URL`, recrie o container para aplicar a nova variável:
+
+```bash
+docker compose up -d --force-recreate
+```
+
+#### 3. Produção com Docker
+
+Crie o arquivo de ambiente de produção:
+
+```bash
+cp .env.prod.example .env.prod
+```
+
+Configure a URL da API:
+
+```env
+API_URL=https://api.seu-dominio.com
+```
+
+Construa e inicie o container de produção:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+O frontend ficará disponível na porta 8080 do host:
 
 👉 **http://localhost:8080**
 
-#### 5. Gerenciar o container
+A variável `API_URL` é aplicada durante a inicialização do container. Não é necessário reconstruir a imagem apenas para alterar essa variável; recrie o container:
 
-Para visualizar os containers em execução:
+```bash
+docker compose -f docker-compose.prod.yml up -d --force-recreate
+```
+
+#### 4. Gerenciar os containers
+
+Para visualizar os containers de desenvolvimento:
 
 ```bash
 docker compose ps
 ```
 
-Para acompanhar os logs:
+Para acompanhar os logs de desenvolvimento:
 
 ```bash
 docker compose logs -f frontend
 ```
 
-Para interromper a aplicação:
+Para acompanhar os logs de produção:
+
+```bash
+docker compose -f docker-compose.prod.yml logs -f frontend
+```
+
+Para interromper o ambiente de desenvolvimento:
 
 ```bash
 docker compose down
 ```
 
-Para reconstruir a imagem após alterações no código ou nas variáveis de build:
+Para interromper o ambiente de produção:
 
 ```bash
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml down
 ```
 
-> **Observação:** a execução do frontend em Docker não inicia automaticamente a API ou o banco de dados. Esses serviços possuem configuração e gerenciamento próprios. Certifique-se de que a API esteja em execução e que o endereço configurado em `VITE_API_URL` seja acessível pelo navegador.
+> **Observação:** os arquivos Compose do frontend não iniciam automaticamente a API ou o banco de dados. Esses serviços possuem configuração e gerenciamento próprios. Certifique-se de que a API esteja em execução e que o endereço configurado seja acessível pelo navegador.
 
 ---
 
