@@ -1,26 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { authService } from '../services/authService';
 
 export function useAuth() {
-  const [authenticated, setAuthenticated] = useState(authService.isAuthenticated());
-
-  useEffect(() => {
-    setAuthenticated(authService.isAuthenticated());
-  }, []);
-
-  const getToken = useCallback(() => {
-    return authService.getToken();
-  }, []);
-
-  const isAuthenticated = useCallback(() => {
-    return authenticated;
-  }, [authenticated]);
-
-  const logout = useCallback(() => {
-    authService.logout();
-    setAuthenticated(false);
-  }, []);
-
   const isLockedOut = useCallback(() => {
     return authService.isLockedOut();
   }, []);
@@ -34,9 +15,6 @@ export function useAuth() {
   }, []);
 
   return {
-    getToken,
-    isAuthenticated,
-    logout,
     isLockedOut,
     getLockoutTimeRemaining,
     validatePasswordStrength,

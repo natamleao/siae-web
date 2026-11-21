@@ -31,14 +31,18 @@ export function CardAuxilio({ auxilio, icon: Icon }: CardAuxilioProps) {
                 <div className="flex gap-2">
                     <button
                         type="button"
-                        className="border border-[#1058ccb3] bg-white rounded-[8px] px-3 py-1.5 text-[12px] font-semibold text-black"
+                        className={`flex-1 rounded-[8px] px-3 py-1.5 text-[12px] font-semibold ${
+                            disponivel
+                                ? 'border border-[#1058ccb3] bg-white text-black'
+                                : 'bg-[#1058cc] text-white'
+                        }`}
                     >
                         Saiba mais
                     </button>
                     {disponivel && (
                         <button
                             type="button"
-                            className="bg-[#1058cc] rounded-[8px] px-3 py-1.5 text-[13px] font-semibold text-white"
+                            className="flex-1 bg-[#1058cc] rounded-[8px] px-3 py-1.5 text-[13px] font-semibold text-white"
                         >
                             Solicitar
                         </button>

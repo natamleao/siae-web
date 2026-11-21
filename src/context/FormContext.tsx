@@ -1,13 +1,11 @@
 import { useState } from "react"
 import type { ReactNode } from "react"
-import {
-  FormContext,
-  type FormData,
-  type GenericSection,
-} from "./FormContextValue"
+import { FormContext } from "./formContextDefinition"
+
+type GenericSection = Record<string, unknown>
 
 export function FormProvider({ children }: { children: ReactNode }) {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     personal: {},
     address: {},
     academic: {},
@@ -17,7 +15,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
     report: {},
   })
 
-  function updateFormData(section: keyof FormData, data: GenericSection) {
+  function updateFormData(section: keyof typeof formData, data: GenericSection) {
     setFormData((prev) => ({
       ...prev,
       [section]: {

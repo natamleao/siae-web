@@ -31,4 +31,9 @@ jobs:
         run: pnpm lint
 
       - name: Build
+        env:
+          VITE_API_URL: https://api.example.invalid
         run: pnpm build
+
+      - name: Build Docker image
+        run: docker build -t siae-web:ci .

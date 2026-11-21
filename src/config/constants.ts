@@ -14,9 +14,12 @@ export const AUTH = {
 
 export const API_ENDPOINTS = {
   LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
+  ALUNO_PROFILE: '/aluno/meus-dados',
+  FUNCIONARIO_PROFILE: '/funcionario/perfil',
+  ALUNO_REGISTER: '/aluno/register',
   LOGOUT: '/auth/logout',
   FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
 } as const;
 
 export const ERROR_MESSAGES = {

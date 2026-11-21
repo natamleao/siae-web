@@ -1,6 +1,6 @@
 import { apiRequest, getApiUrl } from '../config/api';
 import { API_ENDPOINTS, AUTH, ERROR_MESSAGES } from '../config/constants';
-import type { LoginResponse, RegisterResponse, ForgotPasswordResponse } from '../types/auth';
+import type { LoginResponse, RegisterResponse, ForgotPasswordResponse, ResetPasswordResponse } from '../types/auth';
 
 class AuthService {
   async login(email: string, password: string): Promise<LoginResponse> {
@@ -35,41 +35,36 @@ class AuthService {
   }
 
   async register(
+    nome: string,
+    matricula: string,
     email: string,
-    password: string,
-    matricula: string
+    senha: string
   ): Promise<RegisterResponse> {
-    if (!email || !password || !matricula) {
+    if (!nome.trim() || !matricula || !email || !senha) {
       throw new Error('Todos os campos são obrigatórios');
     }
 
-    if (!this.validatePasswordStrength(password)) {
+    if (!this.validatePasswordStrength(senha)) {
       throw new Error(ERROR_MESSAGES.INVALID_PASSWORD_STRENGTH);
     }
 
-    const response = await apiRequest<RegisterResponse>(
-      getApiUrl(API_ENDPOINTS.REGISTER),
+    return apiRequest<RegisterResponse>(
+      getApiUrl(API_ENDPOINTS.ALUNO_REGISTER),
       {
         method: 'POST',
         body: JSON.stringify({
-          email,
-          password,
-          matricula: Number(matricula),
-          permissao: 0,
+          nome: nome.trim(),
+          matricula,
+          email: email.trim().toLowerCase(),
+          senha,
         }),
       }
     );
-
-    if (response.token) {
-      this.setToken(response.token);
-    }
-
-    return response;
   }
 
   async forgotPassword(identifier: string): Promise<ForgotPasswordResponse> {
     if (!identifier) {
-      throw new Error('Email ou matrícula é obrigatório');
+      throw new Error('E-mail, matrícula ou SIAPE é obrigatório');
     }
 
     try {
@@ -77,7 +72,7 @@ class AuthService {
         getApiUrl(API_ENDPOINTS.FORGOT_PASSWORD),
         {
           method: 'POST',
-          body: JSON.stringify({ email: identifier }),
+          body: JSON.stringify({ identifier }),
         }
       );
 
@@ -88,6 +83,23 @@ class AuthService {
       this.incrementFailCount();
       throw error;
     }
+  }
+
+  async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<ResetPasswordResponse> {
+    if (!token || !newPassword) {
+      throw new Error('Token e nova senha são obrigatórios');
+    }
+
+    return apiRequest<ResetPasswordResponse>(
+      getApiUrl(API_ENDPOINTS.RESET_PASSWORD),
+      {
+        method: 'POST',
+        body: JSON.stringify({ token, newPassword }),
+      }
+    );
   }
 
   async logout(): Promise<void> {

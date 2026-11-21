@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaBaby, FaUserPlus, FaUtensils } from 'react-icons/fa6';
+import type { IconType } from 'react-icons';
+import { FaUserPlus } from 'react-icons/fa6';
 import { TbUrgent } from 'react-icons/tb';
+import { PiBaby } from 'react-icons/pi';
+import { MdOutlineRestaurant } from 'react-icons/md';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { AvisosCarrossel } from '../components/AvisosCarrossel';
@@ -10,18 +13,18 @@ import { SolicitacaoItem } from '../components/SolicitacaoItem';
 import { useAuthContext } from '../context/useAuthContext';
 import { AUXILIOS_MOCK, SOLICITACOES_MOCK } from '../config/auxilios';
 
-const AUXILIO_ICONS: Record<string, typeof FaBaby> = {
-    creche: FaBaby,
-    'isencao-ru': FaUtensils,
+const AUXILIO_ICONS: Record<string, IconType> = {
+    creche: PiBaby,
+    'isencao-ru': MdOutlineRestaurant,
     ingressante: FaUserPlus,
     emergencial: TbUrgent,
 };
 
-const SOLICITACAO_ICONS: Record<string, typeof FaBaby> = {
+const SOLICITACAO_ICONS: Record<string, IconType> = {
     'Auxílio Emergencial': TbUrgent,
-    'Isenção Parcial do RU': FaUtensils,
+    'Isenção Parcial do RU': MdOutlineRestaurant,
     'Auxílio Ingressante': FaUserPlus,
-    'Auxílio Creche': FaBaby,
+    'Auxílio Creche': PiBaby,
 };
 
 function CardsSkeleton() {
@@ -37,7 +40,7 @@ function CardsSkeleton() {
 export function Dashboard() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const { user, logout } = useAuthContext();
+    const { logout } = useAuthContext();
 
     useEffect(() => {
         const getUserData = async () => {
@@ -73,7 +76,6 @@ export function Dashboard() {
                             Veja quais auxílios a Assistência Estudantil oferece, e se eles estão disponíveis para solicitação.
                         </p>
                     </div>
-
                     {loading ? (
                         <CardsSkeleton />
                     ) : (
@@ -83,14 +85,6 @@ export function Dashboard() {
                             ))}
                         </div>
                     )}
-
-                    {user && (
-                        <div className="bg-white p-4 rounded-lg border border-gray-200 text-left">
-                            <p className="text-xs text-gray-400 uppercase font-bold mb-1">Usuário Autenticado</p>
-                            <p className="text-gray-700 font-medium truncate">{user.email}</p>
-                        </div>
-                    )}
-
                 </div>
 
                 <div className="w-full max-w-[1080px] flex flex-col items-end gap-6">

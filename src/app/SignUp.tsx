@@ -25,6 +25,18 @@ export function SignUp() {
         return AUTH.MATRICULA_REGEX.test(matricula);
     };
 
+    const validateName = (name: string): boolean => {
+        const normalizedName = name.trim().replace(/\s+/g, " ");
+        const words = normalizedName.split(" ");
+
+        return (
+            normalizedName.length >= 1 &&
+            normalizedName.length <= 50 &&
+            words.length >= 2 &&
+            /^[\p{L}\s]+$/u.test(normalizedName)
+        );
+    };
+
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
@@ -34,8 +46,10 @@ export function SignUp() {
             newErrors.matricula = 'Matrícula deve conter 6 dígitos';
         }
 
-        if (!nomeCompleto) {
+        if (!nomeCompleto.trim()) {
             newErrors.nomeCompleto = 'Nome completo é obrigatório';
+        } else if (!validateName(nomeCompleto)) {
+            newErrors.nomeCompleto = 'Informe nome e sobrenome, usando apenas letras, com até 50 caracteres';
         }
 
         if (!email) {
@@ -72,7 +86,7 @@ export function SignUp() {
         setLoading(true);
 
         try {
-            const response = await authService.register(email, senha, matricula);
+            const response = await authService.register(nomeCompleto, matricula, email, senha);
             toast.success(response.message || 'Cadastro realizado com sucesso!');
 
             setTimeout(() => navigate("/"), TIMINGS.REDIRECT_DELAY);
@@ -181,7 +195,18 @@ export function SignUp() {
                                     }}
                                     error={errors.senha}
                                     valid={authService.validatePasswordStrength(senha)}
-                                    tooltip="A senha deve conter: entre 8 e 16 caracteres, letra minúscula, letra maiúscula, número e caractere especial (!, @, #, $, %, &, *, -, _)"
+                                    tooltip={(
+                                        <>
+                                            <p className="font-semibold mb-1">A senha deve conter:</p>
+                                            <ul className="list-disc pl-4 space-y-0.5">
+                                                <li>Entre 8 e 16 caracteres</li>
+                                                <li>Letras minúsculas (a-z)</li>
+                                                <li>Letras maiúsculas (A-Z)</li>
+                                                <li>Números (0-9)</li>
+                                                <li>Caracteres especiais (!, @, #, $, %, &, *, -, _)</li>
+                                            </ul>
+                                        </>
+                                    )}
                                     required
                                     placeholder="Digite sua senha"
                                     maxLength={AUTH.MAX_PASSWORD_LENGTH}
@@ -215,11 +240,7 @@ export function SignUp() {
                             <button
                                 type="submit"
                                 disabled={isDisabled}
-                                className={`w-[220px] rounded-[8px] px-[20px] py-[12px] text-[20px] font-semibold transition-all duration-300 ${
-                                    isDisabled
-                                    ? 'bg-gray-400 cursor-not-allowed text-black'
-                                    : 'bg-[#1058cc] text-white hover:bg-blue-700'
-                                }`}
+                                className="w-[220px] rounded-[8px] px-[20px] py-[12px] text-[20px] font-semibold text-white bg-[#1058cc] transition-all duration-300 hover:bg-blue-700 disabled:cursor-not-allowed disabled:hover:bg-[#1058cc]"
                             >
                                 {loading ? "Cadastrando..." : "Cadastrar"}
                             </button>

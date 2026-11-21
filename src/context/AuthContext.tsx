@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import type { User } from '../types/auth';
 import { authService } from '../services/authService';
-import { AuthContext } from './AuthContextValue';
+import type { User } from '../types/auth';
+import { AuthContext } from './authContextDefinition';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {

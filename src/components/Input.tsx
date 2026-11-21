@@ -23,7 +23,7 @@ interface InputProps {
     disabled?: boolean;
     error?: string;
     hint?: string;
-    tooltip?: string;
+    tooltip?: React.ReactNode;
     minLength?: number;
     maxLength?: number;
     pattern?: string;
@@ -79,11 +79,11 @@ export const InputField: React.FC<InputProps> = ({
         >
             <label htmlFor={id} className={`flex items-center ${isLg ? 'gap-2' : 'gap-1.5'} text-sm font-medium text-gray-700 ${labelClassName ?? ''}`}>
                 {label}
-                {required && <span className="text-red-500 ml-1">*</span>}
                 {tooltip && (
                     <span className="relative inline-flex group">
                         <HelpTooltipIcon className="cursor-help" />
-                        <span className="pointer-events-none absolute left-1/2 top-full z-10 mt-1 w-56 -translate-x-1/2 rounded-md bg-gray-800 p-2 text-xs font-normal text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                        <span className="pointer-events-none absolute left-full top-1/2 z-10 ml-3 w-72 -translate-y-1/2 rounded-md bg-[#073989] p-3 text-xs font-normal text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                            <span className="absolute right-full top-1/2 -translate-y-1/2 border-y-8 border-y-transparent border-r-8 border-r-[#073989]" />
                             {tooltip}
                         </span>
                     </span>
