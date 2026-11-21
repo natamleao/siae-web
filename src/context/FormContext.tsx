@@ -12,7 +12,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
     family: {},
     income: {},
     aggravatingFactors: {},
-    report: {}
+    report: {},
   })
 
   function updateFormData(section: keyof typeof formData, data: GenericSection) {
