@@ -7,7 +7,7 @@ export const AUTH = {
   LOCKOUT_END_KEY: 'siae_lockout_end',
   MIN_PASSWORD_LENGTH: 8,
   MAX_PASSWORD_LENGTH: 16,
-  PASSWORD_REGEX: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*\-_]).{8,16}$/,
+  PASSWORD_REGEX: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*\-_])[A-Za-z\d!@#$%&*_-]{8,16}$/,
   MATRICULA_REGEX: /^\d{6}$/,
   INSTITUTIONAL_EMAIL_REGEX: /^[^\s@]+@alu\.ufc\.br$/i,
 } as const;
